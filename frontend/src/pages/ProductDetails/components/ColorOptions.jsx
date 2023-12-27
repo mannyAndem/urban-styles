@@ -12,11 +12,7 @@ const ColorOptions = ({ colors, selectedColor, selectColor }) => {
           key={index}
           color={color}
           selectColor={selectColor}
-          selected={
-            selectedColor
-              ? selectedColor.toLowerCase() === color.toLowerCase()
-              : color.toLowerCase() === colors[0]?.toLowerCase()
-          }
+          selected={selectedColor === color}
         />
       ))}
     </div>

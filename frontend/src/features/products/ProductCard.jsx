@@ -5,7 +5,7 @@ import AddToCartButton from "../cart/AddToCartButton";
 const ProductCard = ({ product }) => {
   return (
     <div className="w-full relative flex flex-col gap-3 rounded-sm ">
-      <button className="absolute top-8 right-8 p-2 border border-dark rounded-sm">
+      <button className="absolute top-8 right-8 p-2 border-2 border-dark rounded-md">
         <img src={heartIcon} />
       </button>
       <Link
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
             ${product.variants[0].prices[0].amount}
           </span>
         </div>
-        <AddToCartButton variantId={product.variants[0].id} />
+        <AddToCartButton type="icon" variantId={product.variants[0].id} />
       </div>
     </div>
   );

@@ -10,9 +10,15 @@ import {
   selectProductsStatus,
 } from "../../features/products/productsSlice";
 import { useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  ScrollRestoration,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Header from "../../shared/Header";
 import Footer from "../../shared/Footer";
+import ScrollToTop from "../../components/ScrollToTop";
 
 const Products = () => {
   const status = useSelector(selectProductsStatus);
@@ -37,7 +43,7 @@ const Products = () => {
   }, [status, dispatch]);
 
   return (
-    <>
+    <ScrollToTop>
       <Header />
       <div className="text-dark">
         <section className="py-24 px-16">
@@ -93,7 +99,7 @@ const Products = () => {
         </section>
       </div>
       <Footer />
-    </>
+    </ScrollToTop>
   );
 };
 

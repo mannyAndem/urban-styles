@@ -1,12 +1,13 @@
 import { Link, NavLink } from "react-router-dom";
 import logo from "../assets/brand/logo.png";
-import cartIcon from "../assets/icons/cartIcon.png";
 import userIcon from "../assets/icons/userIcon.png";
 import arrowDown from "../assets/icons/arrow-down-icon.png";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../features/auth/AuthSlice";
 import LogoutButton from "../features/auth/LogoutButton";
+import CartLink from "../features/cart/CartLink";
+import Input from "../components/Input";
 
 const Header = () => {
   const [authModalVisible, setAuthModalVisible] = useState(false);
@@ -52,15 +53,9 @@ const Header = () => {
       </nav>
       <div className=" pt-6 flex justify-end gap-8 items-center">
         <search className="w-1/3">
-          <input
-            placeholder="Search"
-            className="placeholder-dark placeholder-opacity-50 p-3 w-full bg-transparent border  border-dark"
-          />
+          <Input placeholder="Search" />
         </search>
-        <Link to="/cart" className="flex items-center gap-2">
-          <img src={cartIcon} />
-          <span>(0)</span>
-        </Link>
+        <CartLink />
         <button onClick={toggleAuthModal} className="flex items-center gap-1">
           {currentUser ? (
             <div className="w-10 h-10 bg-dark rounded-full flex justify-center items-center text-xl text-lightPink font-medium">

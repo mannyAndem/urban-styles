@@ -6,13 +6,18 @@ import {
   fetchCart,
   selectCart,
   selectCartError,
+  selectCartQuantity,
   selectCartStatus,
 } from "../../features/cart/cartSlice";
 import { useEffect } from "react";
+import CartSummary from "./components/CartSummary";
+import Input from "../../components/Input";
+import ButtonPrimary from "../../components/ButtonPrimary";
 
 const Cart = () => {
   const status = useSelector(selectCartStatus);
   const cart = useSelector(selectCart);
+  const quantity = useSelector(selectCartQuantity);
   const error = useSelector(selectCartError);
   const dispatch = useDispatch();
 
@@ -32,7 +37,7 @@ const Cart = () => {
             <div className="flex flex-col w-full">
               {status === "success" ? (
                 cart.items.map((product) => (
-                  <CartProductCard product={product} />
+                  <CartProductCard key={product.id} product={product} />
                 ))
               ) : status === "pending" ? (
                 <span className="block text-center text-xl font-medium">
@@ -45,36 +50,13 @@ const Cart = () => {
               )}
             </div>
             <div className="mt-8 flex gap-8">
-              <input
-                className="bg-transparent w-full text-xl px-4 py-3 rounded-sm border border-gray"
-                placeholder="Enter coupon code"
-              />
-              <button className="whitespace-nowrap px-8 py-4 bg-dark text-lightPink rounded-sm text-xl">
-                Apply Coupon
-              </button>
+              <Input placeholder="Enter coupon code" />
+              <div>
+                <ButtonPrimary>Apply Coupon</ButtonPrimary>
+              </div>
             </div>
           </div>
-          <div className="text-dark  w-1/3">
-            <h2 className="text-2xl font-medium">Order Summary</h2>
-            <ul className="mt-8 flex flex-col gap-8">
-              <li className="flex items-center justify-between">
-                <span className="text-xl text-gray">Cart Item</span>
-                <span className="font-medium text-xl">3</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-xl text-gray">Subtotal</span>
-                <span className="font-medium text-xl">N120,000</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-xl text-gray">Delivery</span>
-                <span className="font-medium text-xl">N2000</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-xl text-gray">Total</span>
-                <span className="font-medium text-xl">N122,000</span>
-              </li>
-            </ul>
-          </div>
+          <CartSummary quantity={quantity} cart={cart} />
         </div>
       </div>
       <Footer />

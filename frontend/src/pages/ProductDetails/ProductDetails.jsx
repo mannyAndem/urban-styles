@@ -1,12 +1,13 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "../../api/axios";
 import ProductList from "../../features/products/ProductList";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import ImageGallery from "./components/imageGallery";
 import SizeOptions from "./components/SizeOptions";
 import ColorOptions from "./components/ColorOptions";
 import Header from "../../shared/Header";
 import Footer from "../../shared/Footer";
+import AddToCartButton from "../../features/cart/AddToCartButton";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -65,8 +66,13 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const selectedSize = searchParams.get("size");
-  const selectedColor = searchParams.get("color");
+  // const selectedSize = searchParams.get("size");
+  // const selectedColor = searchParams.get("color");
+
+  const selectedSize =
+    searchParams.get("size") || (status === "success" && parseSizes()[0]);
+  const selectedColor =
+    searchParams.get("color") || (status === "success" && parseColors()[0]);
 
   const selectColor = (color) => {
     if (selectedSize) {
@@ -81,6 +87,30 @@ const ProductDetails = () => {
       navigate(`?color=${selectedColor}&size=${size}`);
     } else {
       navigate(`?size=${size}`);
+    }
+  };
+
+  const getCurrentVariantId = () => {
+    if (selectedColor && selectedSize) {
+      const variantText = `${selectedSize} / ${selectedColor}`;
+      const variant = product.variants.find(
+        (variant) => variant.title === variantText
+      );
+      return variant?.id;
+    }
+    if (selectedSize) {
+      const variantText = `${selectedSize}`;
+      const variant = product.variants.find(
+        (variant) => variant.title === variantText
+      );
+      return variant?.id;
+    }
+    if (selectedColor) {
+      const variantText = `${selectedColor}`;
+      const variant = product.variants.find(
+        (variant) => variant.title === variantText
+      );
+      return variant?.id;
     }
   };
   return (
@@ -137,24 +167,29 @@ const ProductDetails = () => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <ColorOptions
-                      colors={parseColors()}
-                      selectedColor={selectedColor}
-                      selectColor={selectColor}
-                    />
-                    <SizeOptions
-                      sizes={parseSizes()}
-                      selectedSize={selectedSize}
-                      selectSize={selectSize}
-                    />
+                    {selectedColor && (
+                      <ColorOptions
+                        colors={parseColors()}
+                        selectedColor={selectedColor}
+                        selectColor={selectColor}
+                      />
+                    )}
+                    {selectedSize && (
+                      <SizeOptions
+                        sizes={parseSizes()}
+                        selectedSize={selectedSize}
+                        selectSize={selectSize}
+                      />
+                    )}
                   </div>
                   <div className="flex gap-8 ">
                     <button className="rounded-md w-full p-4 border-2 border-dark">
                       ADD TO WISHLIST
                     </button>
-                    <button className="rounded-md w-full p-4 border-2 bg-dark text-lightPink border-dark">
-                      ADD TO CART
-                    </button>
+                    <AddToCartButton
+                      variantId={getCurrentVariantId()}
+                      type="regular"
+                    />
                   </div>
                 </div>
               </div>

@@ -5,7 +5,7 @@ const ButtonPrimary = ({ children, onClick, pending }) => {
     return (
       <button
         disabled
-        className="text-xl font-medium w-full bg-dark text-lightPink opacity-70 relative"
+        className="whitespace-nowrap px-4 text-xl font-medium w-full bg-dark text-lightPink opacity-70 relative"
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <CircleLoader color="#FFF4F4" size={20} />
@@ -18,7 +18,7 @@ const ButtonPrimary = ({ children, onClick, pending }) => {
   return (
     <button
       onClick={onClick ? (e) => onClick(e) : null}
-      className="w-full py-4 text-xl font-medium bg-dark text-lightPink rounded-md shadow-sm"
+      className="whitespace-nowrap px-4 w-full py-4 text-xl font-medium bg-dark text-lightPink rounded-md shadow-sm"
     >
       {children}
     </button>

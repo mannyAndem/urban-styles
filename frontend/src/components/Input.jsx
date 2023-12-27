@@ -10,7 +10,7 @@ const Input = ({ name, value, onChange, color, type, placeholder }) => {
       className={`w-full p-2 rounded-md placeholder-opacity-70 bg-transparent border-2 ${
         color
           ? `placeholder-[${color}] text-[${color}] border-[${color}]`
-          : "text-gray border-gray placeholder-gray"
+          : "text-gray border-lightGray placeholder-lightGray"
       } focus:outline-dark`}
     />
   );

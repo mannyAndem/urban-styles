@@ -13,11 +13,7 @@ const SizeOptions = ({ sizes, selectedSize, selectSize }) => {
           key={index}
           size={size}
           selectSize={selectSize}
-          selected={
-            selectedSize
-              ? selectedSize.toUpperCase() === size.toUpperCase()
-              : size.toUpperCase() === sizes[0]
-          }
+          selected={selectedSize === size}
         />
       ))}
     </div>

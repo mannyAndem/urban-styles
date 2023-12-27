@@ -7,6 +7,7 @@ const initialState = {
   cartId: localStorage.getItem("cartId") || null,
   error: null,
   addProductStatus: "idle",
+  quantity: 0,
 };
 
 export const fetchCart = createAsyncThunk(
@@ -74,6 +75,10 @@ export const cartSlice = createSlice({
     builder.addCase(fetchCart.fulfilled, (state, action) => {
       state.status = "success";
       state.data = action.payload;
+      state.quantity = action.payload.items.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0
+      );
     });
     builder.addCase(fetchCart.rejected, (state, action) => {
       state.status = "error";
@@ -82,9 +87,14 @@ export const cartSlice = createSlice({
     builder.addCase(addProductToCart.pending, (state) => {
       state.addProductStatus = "pending";
     });
-    builder.addCase(addProductToCart.fulfilled, (state) => {
+    builder.addCase(addProductToCart.fulfilled, (state, action) => {
       state.addProductStatus = "success";
+      state.data = action.payload;
       state.status = "idle"; // So that the components rendering the cart rerender.
+      state.quantity = action.payload.items.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0
+      );
     });
     builder.addCase(addProductToCart.rejected, (state) => {
       state.status = "error";
@@ -99,3 +109,4 @@ export const selectCart = (state) => state.cart.data;
 export const selectCartStatus = (state) => state.cart.status;
 export const selectCartError = (state) => state.cart.error;
 export const selectAddProductStatus = (state) => state.cart.addProductStatus;
+export const selectCartQuantity = (state) => state.cart.quantity;
