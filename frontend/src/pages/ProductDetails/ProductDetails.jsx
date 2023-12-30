@@ -5,9 +5,10 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import ImageGallery from "./components/imageGallery";
 import SizeOptions from "./components/SizeOptions";
 import ColorOptions from "./components/ColorOptions";
-import Header from "../../shared/Header";
-import Footer from "../../shared/Footer";
+import Header from "../../structure/Header";
+import Footer from "../../structure/Footer";
 import AddToCartButton from "../../features/cart/AddToCartButton";
+import Loader from "../../components/Loader";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -114,97 +115,95 @@ const ProductDetails = () => {
     }
   };
   return (
-    <>
-      <Header />
-      <div className="text-dark">
-        <section className="py-24 px-16">
-          <h1 className="text-midXl font-medium">Product Details</h1>
-          {status === "pending" ? (
-            <span className="text-2xl block text-center">Loading...</span>
-          ) : status === "error" ? (
-            <span className="text-2xl text-center block text-red-300">
-              Something went wrong.
-            </span>
-          ) : (
-            <>
-              {imageGalleryVisibilty && (
-                <ImageGallery
-                  images={product.images}
-                  toggleImageGallery={toggleImageGallery}
-                  imageGalleryVisibility={imageGalleryVisibilty}
-                />
-              )}
-              <div className="mt-24 flex gap-8">
-                <div className="w-1/2 grid grid-cols-3 gap-8">
-                  <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
-                    <img
-                      src={product.thumbnail}
-                      className="cursor-pointer w-full h-full object-cover"
-                      onClick={toggleImageGallery}
-                    />
-                  </div>
-                  <div className="col-span-2 row-span-2 rounded-sm overflow-hidden shadow-sm">
-                    <img
-                      src={product.images[0]?.url ?? product.thumbnail}
-                      className="cursor-pointer w-full h-full object-cover"
-                      onClick={toggleImageGallery}
-                    />
-                  </div>
-                  <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
-                    <img
-                      src={product.images[1]?.url ?? product.thumbnail}
-                      className="cursor-pointer w-full h-full object-cover"
-                      onClick={toggleImageGallery}
-                    />
-                  </div>
+    <div className="text-dark">
+      <section className="py-24 px-16">
+        <h1 className="text-midXl font-medium">Product Details</h1>
+        {status === "pending" ? (
+          <div className="flex items-center justify-center">
+            <Loader type="lg" />
+          </div>
+        ) : status === "error" ? (
+          <span className="text-2xl text-center block text-red-300">
+            Something went wrong.
+          </span>
+        ) : (
+          <>
+            {imageGalleryVisibilty && (
+              <ImageGallery
+                images={product.images}
+                toggleImageGallery={toggleImageGallery}
+                imageGalleryVisibility={imageGalleryVisibilty}
+              />
+            )}
+            <div className="mt-24 flex gap-8">
+              <div className="w-1/2 grid grid-cols-3 gap-8">
+                <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
+                  <img
+                    src={product.thumbnail}
+                    className="cursor-pointer w-full h-full object-cover"
+                    onClick={toggleImageGallery}
+                  />
                 </div>
-                <div className="w-1/2 flex flex-col justify-between gap-16">
-                  <div className="flex flex-col gap-8">
-                    <h2 className="text-2xl font-medium">{product.title}</h2>
-                    <p>{product.description}</p>
-                    <span className="text-2xl font-medium">
-                      ${product.variants[0].prices[0].amount}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    {selectedColor && (
-                      <ColorOptions
-                        colors={parseColors()}
-                        selectedColor={selectedColor}
-                        selectColor={selectColor}
-                      />
-                    )}
-                    {selectedSize && (
-                      <SizeOptions
-                        sizes={parseSizes()}
-                        selectedSize={selectedSize}
-                        selectSize={selectSize}
-                      />
-                    )}
-                  </div>
-                  <div className="flex gap-8 ">
-                    <button className="rounded-md w-full p-4 border-2 border-dark">
-                      ADD TO WISHLIST
-                    </button>
-                    <AddToCartButton
-                      variantId={getCurrentVariantId()}
-                      type="regular"
-                    />
-                  </div>
+                <div className="col-span-2 row-span-2 rounded-sm overflow-hidden shadow-sm">
+                  <img
+                    src={product.images[0]?.url ?? product.thumbnail}
+                    className="cursor-pointer w-full h-full object-cover"
+                    onClick={toggleImageGallery}
+                  />
+                </div>
+                <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
+                  <img
+                    src={product.images[1]?.url ?? product.thumbnail}
+                    className="cursor-pointer w-full h-full object-cover"
+                    onClick={toggleImageGallery}
+                  />
                 </div>
               </div>
-            </>
-          )}
-        </section>
-        <section className="py-24 px-16">
-          <div className="mx-auto w-max py-2 px-8 bg-dark text-lightPink border-dark border rounded-sm">
-            <h2>RELATED PRODUCTS</h2>
-          </div>
-          <div className="mt-24">{/* <ProductList /> */}</div>
-        </section>
-      </div>
-      <Footer />
-    </>
+              <div className="w-1/2 flex flex-col justify-between gap-16">
+                <div className="flex flex-col gap-8">
+                  <h2 className="text-2xl font-medium">{product.title}</h2>
+                  <p>{product.description}</p>
+                  <span className="text-2xl font-medium">
+                    ${product.variants[0].prices[0].amount}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  {selectedColor && (
+                    <ColorOptions
+                      colors={parseColors()}
+                      selectedColor={selectedColor}
+                      selectColor={selectColor}
+                    />
+                  )}
+                  {selectedSize && (
+                    <SizeOptions
+                      sizes={parseSizes()}
+                      selectedSize={selectedSize}
+                      selectSize={selectSize}
+                    />
+                  )}
+                </div>
+                <div className="flex gap-8 ">
+                  <button className="rounded-md w-full p-4 border-2 border-dark">
+                    ADD TO WISHLIST
+                  </button>
+                  <AddToCartButton
+                    variantId={getCurrentVariantId()}
+                    type="regular"
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </section>
+      <section className="py-24 px-16">
+        <div className="mx-auto w-max py-2 px-8 bg-dark text-lightPink border-dark border rounded-sm">
+          <h2>RELATED PRODUCTS</h2>
+        </div>
+        <div className="mt-24">{/* <ProductList /> */}</div>
+      </section>
+    </div>
   );
 };
 

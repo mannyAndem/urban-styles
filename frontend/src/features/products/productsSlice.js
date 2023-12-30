@@ -10,7 +10,7 @@ const initialState = {
 export const fetchProducts = createAsyncThunk(
   "products/fetch",
   async (page) => {
-    const LIMIT = 3;
+    const LIMIT = 12;
 
     try {
       const response = await axios.get("/products", {

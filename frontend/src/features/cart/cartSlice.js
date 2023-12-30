@@ -6,7 +6,7 @@ const initialState = {
   status: "idle",
   cartId: localStorage.getItem("cartId") || null,
   error: null,
-  addProductStatus: "idle",
+  addProductStatus: { id: null, status: "idle" },
   quantity: 0,
 };
 
@@ -37,7 +37,7 @@ export const fetchCart = createAsyncThunk(
 
 export const addProductToCart = createAsyncThunk(
   "cart/addItem",
-  async (variantId, { getState, rejectWithValue }) => {
+  async (variantId, { getState, rejectWithValue, fulfillWithValue }) => {
     const cartId = getState().cart.cartId;
     console.log(variantId);
     const data = {
@@ -56,10 +56,49 @@ export const addProductToCart = createAsyncThunk(
         }
       );
       console.log(response.data.cart);
-      return response.data.cart;
+      return fulfillWithValue({ id: variantId });
     } catch (err) {
       console.error(err);
-      return rejectWithValue("Failed to add product to cart");
+      return rejectWithValue({ id: variantId });
+    }
+  }
+);
+
+export const updateItem = createAsyncThunk(
+  "cart/updateItem",
+  async ({ id, quantity }, { getState, rejectWithValue }) => {
+    const cartId = getState().cart.cartId;
+    const data = {
+      quantity,
+    };
+    try {
+      await axios.post(
+        `carts/${cartId}/line-items/${id}`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      return Promise.reject(err);
+    }
+  }
+);
+
+export const deleteItem = createAsyncThunk(
+  "cart/deleteItem",
+  async (id, { getState }) => {
+    const cartId = getState().cart.cartId;
+    try {
+      const response = await axios.delete(`/carts/${cartId}/line-items/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      return Promise.reject(err);
     }
   }
 );
@@ -67,7 +106,11 @@ export const addProductToCart = createAsyncThunk(
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {},
+  reducers: {
+    resetAddProductStatus(state) {
+      state.addProductStatus = "idle";
+    },
+  },
   extraReducers(builder) {
     builder.addCase(fetchCart.pending, (state) => {
       state.status = "pending";
@@ -88,21 +131,25 @@ export const cartSlice = createSlice({
       state.addProductStatus = "pending";
     });
     builder.addCase(addProductToCart.fulfilled, (state, action) => {
-      state.addProductStatus = "success";
-      state.data = action.payload;
+      state.addProductStatus = { id: action.payload.id, status: "success" };
       state.status = "idle"; // So that the components rendering the cart rerender.
-      state.quantity = action.payload.items.reduce(
-        (acc, curr) => acc + curr.quantity,
-        0
-      );
     });
-    builder.addCase(addProductToCart.rejected, (state) => {
-      state.status = "error";
+    builder.addCase(addProductToCart.rejected, (state, action) => {
+      state.addProductStatus = { id: action.payload.id, status: "error" };
+    });
+    builder.addCase(updateItem.fulfilled, (state) => {
+      state.status = "idle";
+    });
+    builder.addCase(deleteItem.fulfilled, (state) => {
+      state.status = "idle";
     });
   },
 });
 
 export default cartSlice.reducer;
+
+// actions
+export const { resetAddProductStatus } = cartSlice.actions;
 
 // Selectors
 export const selectCart = (state) => state.cart.data;

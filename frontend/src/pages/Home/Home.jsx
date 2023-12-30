@@ -7,7 +7,7 @@ import arrowRight from "../../assets/icons/arrow-right.svg";
 import arrowRightWhite from "../../assets/icons/arrow-right-white.svg";
 import ProductList from "../../features/products/ProductList";
 import becomeAffiliate from "../../assets/images/become-affiliate.png";
-import Subscribe from "../../shared/Subscribe";
+import Subscribe from "../../components/Subscribe";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,8 +15,9 @@ import {
   selectProducts,
   selectProductsStatus,
 } from "../../features/products/productsSlice";
-import Header from "../../shared/Header";
-import Footer from "../../shared/Footer";
+import Header from "../../structure/Header";
+import Footer from "../../structure/Footer";
+import Loader from "../../components/Loader";
 
 const Home = () => {
   const status = useSelector(selectProductsStatus);
@@ -29,7 +30,6 @@ const Home = () => {
 
   return (
     <main>
-      <Header />
       <section className="px-16 py-24">
         <h1 className="text-superXl font-medium text-center text-dark">
           URBAN STYLES
@@ -47,7 +47,7 @@ const Home = () => {
             At Urban Styles, we're not just a fashion destination; we're a
             cultural movement. We understand that clothing isn't just something
             you wear; it's a statement, a reflection of your identity and the
-            vibrant urban world you inhabit
+            vibrant urban world you inhabit...
           </p>
           <Link
             to="/about"
@@ -79,7 +79,9 @@ const Home = () => {
           {status === "success" ? (
             <ProductList products={products.slice(0, 3)} />
           ) : status === "pending" ? (
-            <span className="block text-2xl text-center">Loading...</span>
+            <div className="flex items-center justify-center">
+              <Loader type="lg" />
+            </div>
           ) : (
             <span className="block text-red-400 text-center text-2xl">
               Something went wrong.
@@ -124,9 +126,11 @@ const Home = () => {
         </div>
         <div className="mt-16">
           {status === "success" ? (
-            <ProductList products={products.slice(0, 6)} />
+            <ProductList products={products.slice(4, 10)} />
           ) : status === "pending" ? (
-            <span className="block text-2xl text-center">Loading...</span>
+            <div className="flex items-center justify-center">
+              <Loader type="lg" />
+            </div>
           ) : (
             <span className="block text-red-400 text-center text-2xl">
               Something went wrong.
@@ -137,7 +141,6 @@ const Home = () => {
       <section className="py-24 px-16">
         <Subscribe />
       </section>
-      <Footer />
     </main>
   );
 };

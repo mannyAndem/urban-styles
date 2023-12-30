@@ -72,8 +72,9 @@ const Accordion = () => {
 
   return (
     <ul className="flex flex-col gap-3">
-      {faqs.map((faq) => (
+      {faqs.map((faq, index) => (
         <AccordionItem
+          key={index}
           faq={faq}
           isActive={activeFaq === faq.id}
           toggleActiveFaq={toggleActiveFaq}

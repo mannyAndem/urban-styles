@@ -1,12 +1,11 @@
 import ProductList from "../../features/products/ProductList";
-import Footer from "../../shared/Footer";
-import Header from "../../shared/Header";
-import Subscribe from "../../shared/Subscribe";
+import Footer from "../../structure/Footer";
+import Header from "../../structure/Header";
+import Subscribe from "../../components/Subscribe";
 
 const Wishlist = () => {
   return (
     <>
-      <Header />
       <div className="text-dark">
         <section className="py-24 px-16">
           <h1 className="text-midXl">Wishlist</h1>
@@ -19,7 +18,6 @@ const Wishlist = () => {
           <Subscribe />
         </section>
       </div>
-      <Footer />
     </>
   );
 };

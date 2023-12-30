@@ -1,28 +1,17 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home/Home";
-import Wishlist from "./pages/Wishlist/Wishlist";
-import Products from "./pages/Products/Products";
-import ProductDetails from "./pages/ProductDetails/ProductDetails";
-import Cart from "./pages/Cart/Cart";
-import Contact from "./pages/Contact/Contact";
 import Signup from "./pages/Signup/Signup";
 import Login from "./pages/Login/Login";
-import ScrollToTop from "./components/ScrollToTop";
-import About from "./pages/About/About";
+import Main from "./structure/Main";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
     <div className="bg-lightPink">
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/*" element={<Main />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );

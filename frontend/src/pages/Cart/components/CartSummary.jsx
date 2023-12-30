@@ -1,6 +1,6 @@
 const CartSummary = ({ cart, quantity }) => {
   return (
-    <div className="text-dark  w-1/3">
+    <div className="text-dark w-full ">
       <h2 className="text-2xl font-medium">Order Summary</h2>
       <ul className="mt-8 flex flex-col gap-8">
         <li className="flex items-center justify-between">

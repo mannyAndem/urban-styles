@@ -10,15 +10,11 @@ import {
   selectProductsStatus,
 } from "../../features/products/productsSlice";
 import { useEffect } from "react";
-import {
-  Link,
-  ScrollRestoration,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import Header from "../../shared/Header";
-import Footer from "../../shared/Footer";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import Header from "../../structure/Header";
+import Footer from "../../structure/Footer";
 import ScrollToTop from "../../components/ScrollToTop";
+import Loader from "../../components/Loader";
 
 const Products = () => {
   const status = useSelector(selectProductsStatus);
@@ -44,7 +40,6 @@ const Products = () => {
 
   return (
     <ScrollToTop>
-      <Header />
       <div className="text-dark">
         <section className="py-24 px-16">
           <div className="flex justify-between items-center">
@@ -58,7 +53,9 @@ const Products = () => {
             {status === "success" ? (
               <ProductList products={products} />
             ) : status === "pending" ? (
-              <span className="block text-2xl text-center">Loading...</span>
+              <div className="flex items-center justify-center">
+                <Loader type="lg" />
+              </div>
             ) : (
               <span className="block text-red-400 text-center text-2xl">
                 Something went wrong.
@@ -98,7 +95,6 @@ const Products = () => {
           </div>
         </section>
       </div>
-      <Footer />
     </ScrollToTop>
   );
 };
