@@ -2,10 +2,10 @@ import { useDispatch } from "react-redux";
 import deleteIcon from "../../assets/icons/delete.svg";
 import { deleteItem } from "./cartSlice";
 
-const DeleteButton = ({ lineItemId }) => {
+const DeleteButton = ({ lineItemId, variantId }) => {
   const dispatch = useDispatch();
   const handleClick = () => {
-    dispatch(deleteItem(lineItemId));
+    dispatch(deleteItem({ lineItemId, variantId }));
   };
 
   return (

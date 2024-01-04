@@ -6,8 +6,9 @@ const initialState = {
   status: "idle",
   cartId: localStorage.getItem("cartId") || null,
   error: null,
-  addProductStatus: { id: null, status: "idle" },
+  addProductStatus: { id: null, info: "idle" },
   quantity: 0,
+  addedVariants: [],
 };
 
 export const fetchCart = createAsyncThunk(
@@ -66,13 +67,13 @@ export const addProductToCart = createAsyncThunk(
 
 export const updateItem = createAsyncThunk(
   "cart/updateItem",
-  async ({ id, quantity }, { getState, rejectWithValue }) => {
+  async ({ id, quantity }, { getState, fulfillWithValue }) => {
     const cartId = getState().cart.cartId;
     const data = {
       quantity,
     };
     try {
-      await axios.post(
+      const response = await axios.post(
         `carts/${cartId}/line-items/${id}`,
         JSON.stringify(data),
         {
@@ -82,6 +83,8 @@ export const updateItem = createAsyncThunk(
           withCredentials: true,
         }
       );
+
+      return fulfillWithValue(response.data.cart);
     } catch (err) {
       console.error(err);
       return Promise.reject(err);
@@ -91,11 +94,14 @@ export const updateItem = createAsyncThunk(
 
 export const deleteItem = createAsyncThunk(
   "cart/deleteItem",
-  async (id, { getState }) => {
+  async ({ lineItemId, variantId }, { getState, fulfillWithValue }) => {
     const cartId = getState().cart.cartId;
     try {
-      const response = await axios.delete(`/carts/${cartId}/line-items/${id}`);
-      return response.data;
+      const response = await axios.delete(
+        `/carts/${cartId}/line-items/${lineItemId}`
+      );
+      console.log(response);
+      return fulfillWithValue({ variantId, response: response.data.cart });
     } catch (err) {
       console.error(err);
       return Promise.reject(err);
@@ -122,26 +128,44 @@ export const cartSlice = createSlice({
         (acc, curr) => acc + curr.quantity,
         0
       );
+      action.payload.items.forEach((item) =>
+        state.addedVariants.push(item.variant_id)
+      );
     });
     builder.addCase(fetchCart.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(addProductToCart.pending, (state) => {
-      state.addProductStatus = "pending";
+    builder.addCase(addProductToCart.pending, (state, action) => {
+      state.addProductStatus = { id: action.meta.arg, info: "pending" };
     });
     builder.addCase(addProductToCart.fulfilled, (state, action) => {
-      state.addProductStatus = { id: action.payload.id, status: "success" };
+      state.addProductStatus = { id: action.payload.id, info: "success" };
       state.status = "idle"; // So that the components rendering the cart rerender.
     });
     builder.addCase(addProductToCart.rejected, (state, action) => {
-      state.addProductStatus = { id: action.payload.id, status: "error" };
+      state.addProductStatus = { id: action.payload.id, info: "error" };
     });
-    builder.addCase(updateItem.fulfilled, (state) => {
-      state.status = "idle";
+    builder.addCase(updateItem.pending, (state) => {
+      state.status = "pending";
     });
-    builder.addCase(deleteItem.fulfilled, (state) => {
+    builder.addCase(updateItem.fulfilled, (state, action) => {
       state.status = "idle";
+      state.data = action.payload;
+    });
+    builder.addCase(deleteItem.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(deleteItem.fulfilled, (state, action) => {
+      state.data = action.payload.response;
+      console.log(state.data);
+      state.addedVariants = state.addedVariants.filter(
+        (id) => id !== action.payload.variantId
+      );
+      state.status = "success";
+    });
+    builder.addCase(deleteItem.rejected, (state, action) => {
+      state.status = "error";
     });
   },
 });
@@ -157,3 +181,4 @@ export const selectCartStatus = (state) => state.cart.status;
 export const selectCartError = (state) => state.cart.error;
 export const selectAddProductStatus = (state) => state.cart.addProductStatus;
 export const selectCartQuantity = (state) => state.cart.quantity;
+export const selectAddedVariants = (state) => state.cart.addedVariants;

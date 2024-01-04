@@ -5,7 +5,7 @@ import IncreaseQuantityButton from "./IncreaseQuantityButton";
 const CartProductCard = ({ product }) => {
   return (
     <div className="p-8 text-dark border-b border-gray flex gap-8">
-      <DeleteButton lineItemId={product.id} />
+      <DeleteButton lineItemId={product.id} variantId={product.variant_id} />
       <div>
         <img
           src={product.thumbnail}

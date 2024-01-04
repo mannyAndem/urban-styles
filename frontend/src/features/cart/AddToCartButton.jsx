@@ -1,13 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import plusIcon from "../../assets/icons/plus-icon.svg";
+import plusIconLight from "../../assets/icons/plus-icon-light.svg";
 import {
   addProductToCart,
   resetAddProductStatus,
   selectAddProductStatus,
+  selectAddedVariants,
 } from "./cartSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { toast, Toaster } from "react-hot-toast";
 import { useEffect } from "react";
+import ButtonSecondary from "../../components/ButtonSecondary";
 
 /**
  *
@@ -17,7 +20,11 @@ import { useEffect } from "react";
  */
 const AddToCartButton = ({ variantId, type }) => {
   const status = useSelector(selectAddProductStatus);
+  const addedVariants = useSelector(selectAddedVariants);
   const dispatch = useDispatch();
+
+  // boolean to hold whether product is already in cart or not
+  const isInCart = addedVariants.indexOf(variantId) !== -1;
 
   const handleClick = () => {
     if (!variantId) {
@@ -29,12 +36,12 @@ const AddToCartButton = ({ variantId, type }) => {
   };
 
   useEffect(() => {
-    if (status.status === "success" && status.id === variantId) {
+    if (status.info === "success" && status.id === variantId) {
       console.log("yes");
       toast.success("Product added to cart");
       dispatch(resetAddProductStatus());
     }
-    if (status.status === "error" && status.id === variantId) {
+    if (status.info === "error" && status.id === variantId) {
       toast.error("Failed to add product to cart");
       dispatch(resetAddProductStatus());
     }
@@ -44,13 +51,27 @@ const AddToCartButton = ({ variantId, type }) => {
     return (
       <>
         <Toaster />
-        <button
+        {/* <button
           disabled={status === "pending"}
           onClick={handleClick}
-          className="p-3 border-2 border-dark rounded-md"
+          className={`${
+            addedVariants.indexOf(variantId) !== -1
+              ? "bg-dark"
+              : "bg-transparent"
+          } p-3 border-2 border-dark rounded-md`}
         >
           <img src={plusIcon} />
-        </button>
+        </button> */}
+        <div>
+          <ButtonSecondary
+            onClick={handleClick}
+            pending={status.info === "pending" && status.id === variantId}
+            disabled={isInCart}
+            filled={isInCart}
+          >
+            {isInCart ? <img src={plusIconLight} /> : <img src={plusIcon} />}
+          </ButtonSecondary>
+        </div>
       </>
     );
   }
