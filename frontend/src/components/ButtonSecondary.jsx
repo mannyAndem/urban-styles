@@ -10,7 +10,7 @@ const ButtonSecondary = ({ children, onClick, pending, filled, disabled }) => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <Loader />
         </div>
-        <span className="opacity-0">{children}</span>
+        <div className="opacity-0">{children}</div>
       </button>
     );
   }

@@ -10,9 +10,10 @@ import {
   resetLoginStatus,
   selectLoginError,
   selectLoginStatus,
-} from "./AuthSlice";
+} from "./customerSlice";
 import InputGroup from "../../components/InputGroup";
 import ButtonPrimary from "../../components/ButtonPrimary";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginForm = () => {
   const status = useSelector(selectLoginStatus);
@@ -77,10 +78,15 @@ const LoginForm = () => {
       dispatch(resetLoginStatus());
       navigate("/");
     }
+    if (status === "error") {
+      toast.error(error);
+      dispatch(resetLoginStatus());
+    }
   }, [status]);
 
   return (
     <form onSubmit={handleSubmit}>
+      <Toaster />
       {status === "error" && (
         <span className="block text-xl text-center text-red-400">{error}</span>
       )}

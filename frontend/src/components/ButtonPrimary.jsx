@@ -1,4 +1,5 @@
 import CircleLoader from "react-spinners/CircleLoader";
+import Loader from "./Loader";
 
 const ButtonPrimary = ({ children, onClick, pending }) => {
   if (pending) {
@@ -8,9 +9,9 @@ const ButtonPrimary = ({ children, onClick, pending }) => {
         className="whitespace-nowrap px-4 text-xl font-medium w-full bg-dark text-lightPink opacity-70 relative"
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CircleLoader color="#FFF4F4" size={20} />
+          <Loader />
         </div>
-        <span className="opacity-0">{children}</span>
+        <div className="opacity-0">{children}</div>
       </button>
     );
   }

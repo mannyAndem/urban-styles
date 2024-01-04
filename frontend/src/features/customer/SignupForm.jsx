@@ -6,7 +6,7 @@ import {
 } from "../../utils/formValidationFuncs";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetSignupStatus, selectSignupStatus, signup } from "./AuthSlice";
+import { resetSignupStatus, selectSignupStatus, signup } from "./customerSlice";
 
 import InputGroup from "../../components/InputGroup";
 import ButtonPrimary from "../../components/ButtonPrimary";

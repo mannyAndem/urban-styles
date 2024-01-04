@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import loginImg from "../../assets/images/hero-3.png";
 import logo from "../../assets/brand/logo.png";
-import LoginForm from "../../features/auth/LoginForm";
+import LoginForm from "../../features/customer/LoginForm";
 
 const Login = () => {
   return (

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { selectCurrentUser } from "../features/auth/AuthSlice";
+import { selectCustomer } from "../features/customer/customerSlice";
 import userIcon from "../assets/icons/userIcon.png";
 import arrowDown from "../assets/icons/arrow-down-icon.png";
-import LogoutButton from "../features/auth/LogoutButton";
+import LogoutButton from "../features/customer/LogoutButton";
 
 const UserDropDown = () => {
   const [dropDownVisible, setDropDownVisible] = useState(false);
-  const currentUser = useSelector(selectCurrentUser);
+  const customer = useSelector(selectCustomer);
 
   const toggleDropDownVisible = () => {
     setDropDownVisible((prev) => !prev);
@@ -17,12 +17,12 @@ const UserDropDown = () => {
   return (
     <div className="relative">
       <div className="flex items-center gap-1">
-        {currentUser ? (
+        {customer ? (
           <Link
             to="/profile"
             className="w-10 h-10 bg-dark rounded-full flex justify-center items-center text-xl text-lightPink font-medium"
           >
-            {currentUser.first_name[0].toUpperCase()}
+            {customer.first_name[0].toUpperCase()}
           </Link>
         ) : (
           <img src={userIcon} />
@@ -41,7 +41,7 @@ const UserDropDown = () => {
           dropDownVisible ? "scale-y-100" : "scale-y-0"
         } transform origin-top transition duration-300 ease-out right-0 top-[105%] absolute p-4 rounded-md bg-lightPink z-20 shadow-md whitespace-nowrap`}
       >
-        {currentUser ? (
+        {customer ? (
           <span className="flex gap-1 text-xl text-gray pb-4 items-center">
             Done shopping already?
             <LogoutButton />

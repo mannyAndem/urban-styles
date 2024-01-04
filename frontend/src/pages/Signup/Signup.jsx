@@ -1,6 +1,6 @@
 import signupImg from "../../assets/images/hero-1.png";
 import logo from "../../assets/brand/logo.png";
-import SignupForm from "../../features/auth/SignupForm";
+import SignupForm from "../../features/customer/SignupForm";
 import { Link } from "react-router-dom";
 
 const Signup = () => {

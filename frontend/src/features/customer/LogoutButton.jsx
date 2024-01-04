@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { logout, selectLogoutStatus } from "./AuthSlice";
+import { logout, selectLogoutStatus } from "./customerSlice";
 
 const LogoutButton = () => {
   const dispatch = useDispatch();
