@@ -4,7 +4,7 @@ import {
   validatePassword,
 } from "../../utils/formValidationFuncs";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   login,
   resetLoginStatus,
@@ -20,6 +20,9 @@ const LoginForm = () => {
   const error = useSelector(selectLoginError);
   const dispatch = useDispatch();
 
+  const { state } = useLocation();
+
+  console.log(state.from);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -76,7 +79,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (status === "success") {
       dispatch(resetLoginStatus());
-      navigate("/");
+      navigate(state.from ?? "/");
     }
     if (status === "error") {
       toast.error(error);

@@ -11,6 +11,7 @@ import ScrollToTop from "../components/ScrollToTop";
 import About from "../pages/About/About";
 import Profile from "../pages/Profile/Profile";
 import NotFound from "../pages/NotFound/NotFound";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // Component wrapper to wrap all the components within a header and footer
 const Main = () => {
@@ -24,7 +25,14 @@ const Main = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/products/:id"
           element={
