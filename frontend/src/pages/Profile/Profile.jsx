@@ -10,7 +10,7 @@ const Profile = () => {
   return (
     <div className="py-24 px-16">
       <WelcomeUser name={customer.first_name} />
-      <div className="my-24 grid grid-cols-2 gap-8">
+      <div className="my-24 grid grid-cols-2 gap-8 items-start">
         <PersonalDetails customer={customer} />
         <ShippingAddresses customer={customer} />
       </div>

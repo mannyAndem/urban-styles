@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../api/axios";
 
 const initialState = {
-  data: JSON.parse(localStorage.getItem("customer")) || null,
+  data: null, //JSON.parse(localStorage.getItem("customer")) || null,
   loginStatus: "idle",
   signupStatus: "idle",
   logoutStatus: "idle",
@@ -77,7 +77,7 @@ export const addAddress = createAsyncThunk(
       );
 
       console.log(response.data);
-      return fulfillWithValue(response.data.customer);
+      return response.data.customer;
     } catch (err) {
       console.error(err);
       if (err.code === "ERR_NETWORK") {
@@ -116,6 +116,9 @@ export const customerSlice = createSlice({
     resetLogoutStatus(state) {
       state.logoutStatus = "idle";
       state.logoutError = null;
+    },
+    resetAddAddressStatus(state) {
+      state.addAddressStatus = "idle";
     },
   },
   extraReducers(builder) {
@@ -164,8 +167,12 @@ export const customerSlice = createSlice({
   },
 });
 
-export const { resetLoginStatus, resetSignupStatus, resetLogoutStatus } =
-  customerSlice.actions;
+export const {
+  resetLoginStatus,
+  resetSignupStatus,
+  resetLogoutStatus,
+  resetAddAddressStatus,
+} = customerSlice.actions;
 
 export default customerSlice.reducer;
 

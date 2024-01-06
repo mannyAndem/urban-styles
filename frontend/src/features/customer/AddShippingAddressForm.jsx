@@ -8,10 +8,12 @@ import { validateString } from "../../utils/formValidationFuncs";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addAddress,
+  resetAddAddressStatus,
   selectAddAddressStatus,
   selectCustomer,
 } from "./customerSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
+import { toast, Toaster } from "react-hot-toast";
 
 const AddShippingAddressForm = () => {
   const [countries, setCountries] = useState(null);
@@ -107,6 +109,16 @@ const AddShippingAddressForm = () => {
     return validAddress && validCity && validCountryCode && validPostalCode;
   };
 
+  const resetFormData = () => {
+    setFormData((prev) => ({
+      ...prev,
+      address_1: "",
+      city: "",
+      country_code: "",
+      postal_code: "",
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -118,10 +130,21 @@ const AddShippingAddressForm = () => {
     dispatch(addAddress(formData));
   };
 
-  console.log(formData);
+  useEffect(() => {
+    if (status === "success") {
+      toast.success("Address added successfully");
+      resetFormData();
+      dispatch(resetAddAddressStatus());
+    }
+    if (status === "error") {
+      toast.error(error);
+      dispatch(resetAddAddressStatus());
+    }
+  }, [status]);
 
   return (
     <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+      <Toaster />
       <InputGroup>
         <InputGroup.Label htmlFor="email">Address</InputGroup.Label>
         <InputGroup.Input
