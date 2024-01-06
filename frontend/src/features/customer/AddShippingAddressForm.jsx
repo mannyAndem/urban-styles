@@ -1,36 +1,57 @@
-import { useDebugValue, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InputGroup from "../../components/InputGroup";
 import axios from "axios";
 import Select from "../../components/Select";
+import Option from "../../components/Option";
+import Loader from "../../components/Loader";
+import { validateString } from "../../utils/formValidationFuncs";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addAddress,
+  selectAddAddressStatus,
+  selectCustomer,
+} from "./customerSlice";
+import ButtonPrimary from "../../components/ButtonPrimary";
 
 const AddShippingAddressForm = () => {
   const [countries, setCountries] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [countriesStatus, setCountriesStatus] = useState("pending");
+  const [error, setError] = useState(null);
+
+  const currentUser = useSelector(selectCustomer);
+  const status = useSelector(selectAddAddressStatus);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     const fetchCountries = async () => {
-      const response = await axios.get(
-        "https://restcountries.com/v3.1/independent",
-        {
-          signal,
-          params: {
-            fields: "name,cca2",
-          },
+      try {
+        const response = await axios.get(
+          "https://restcountries.com/v3.1/independent",
+          {
+            signal,
+            params: {
+              fields: "name,cca2",
+            },
+          }
+        );
+        const countries = response.data.toSorted((a, b) =>
+          a.name.common > b.name.common ? 1 : -1
+        );
+        //   mapping the countries data to the form the Select element expects
+        console.log(response.data);
+        setCountries(countries);
+        setCountriesStatus("success");
+      } catch (err) {
+        setCountriesStatus("error");
+
+        if (err.code === "ERR_NETWORK") {
+          setError("Can't connect to the internet");
+        } else {
+          setError("Something went wrong.");
         }
-      );
-      let countries = response.data.toSorted((a, b) =>
-        a.name.common > b.name.common ? 1 : -1
-      );
-      //   mapping the countries data to the form the Select element expects
-      countries = countries.map((country) => ({
-        title: country.name.common,
-        value: country.cca2,
-      }));
-      console.log(countries);
-      setCountries(countries);
-      console.log(response.data);
+      }
     };
 
     fetchCountries();
@@ -40,9 +61,9 @@ const AddShippingAddressForm = () => {
   }, []);
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    address: "",
+    first_name: currentUser.first_name,
+    last_name: currentUser.last_name,
+    address_1: "",
     city: "",
     country_code: "",
     postal_code: "",
@@ -56,25 +77,66 @@ const AddShippingAddressForm = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const validateForm = () => {
+    setFormErrors({});
+
+    const validAddress = validateString(formData.address_1);
+    const validCity = validateString(formData.city);
+    const validCountryCode = validateString(formData.country_code);
+    const validPostalCode = validateString(formData.postal_code);
+
+    if (!validAddress) {
+      setFormErrors((prev) => ({ ...prev, address_1: "Address is required" }));
+    }
+    if (!validCity) {
+      setFormErrors((prev) => ({ ...prev, city: "City is required" }));
+    }
+    if (!validCountryCode) {
+      setFormErrors((prev) => ({
+        ...prev,
+        country_code: "Country code is required",
+      }));
+    }
+    if (!validPostalCode) {
+      setFormErrors((prev) => ({
+        ...prev,
+        postal_code: "Postal Code is required",
+      }));
+    }
+
+    return validAddress && validCity && validCountryCode && validPostalCode;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    console.log(formData);
+    dispatch(addAddress(formData));
+  };
+
   console.log(formData);
 
   return (
-    <form className="flex flex-col gap-4 ">
+    <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
       <InputGroup>
         <InputGroup.Label htmlFor="email">Address</InputGroup.Label>
         <InputGroup.Input
-          name="address"
+          name="address_1"
           placeholder="Enter address"
-          value={formData.address}
+          value={formData.address_1}
           onChange={handleFormDataChange}
         />
-        <InputGroup.Error error={formErrors.address} />
+        <InputGroup.Error error={formErrors.address_1} />
       </InputGroup>
       <InputGroup>
         <InputGroup.Label htmlFor="email">City</InputGroup.Label>
         <InputGroup.Input
           name="city"
-          placeholder="Enter address"
+          placeholder="Enter your city"
           value={formData.city}
           onChange={handleFormDataChange}
         />
@@ -82,14 +144,27 @@ const AddShippingAddressForm = () => {
       </InputGroup>
       <InputGroup>
         <InputGroup.Label htmlFor="email">Country Code</InputGroup.Label>
-        {countries && (
-          <Select
-            data={countries}
-            name="country_code"
-            value={formData.country_code}
-            onChange={handleFormDataChange}
-          />
-        )}
+        <Select
+          name="country_code"
+          value={formData.country_code}
+          onChange={handleFormDataChange}
+        >
+          {countriesStatus === "success" ? (
+            countries.map((country, index) => (
+              <Option
+                key={index}
+                title={country.name.common}
+                value={country.cca2}
+              />
+            ))
+          ) : countriesStatus === "error" ? (
+            <span className="block text-red-400 text-center">{error}</span>
+          ) : countriesStatus === "pending" ? (
+            <Loader />
+          ) : (
+            <div></div>
+          )}
+        </Select>
         <InputGroup.Error error={formErrors.country_code} />
       </InputGroup>
       <InputGroup>
@@ -102,6 +177,7 @@ const AddShippingAddressForm = () => {
         />
         <InputGroup.Error error={formErrors.postal_code} />
       </InputGroup>
+      <ButtonPrimary pending={status === "pending"}>Submit</ButtonPrimary>
     </form>
   );
 };

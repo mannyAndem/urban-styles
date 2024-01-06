@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const SelectContext = createContext();
 
-const Select = ({ data, value, onChange, name }) => {
+const Select = ({ children, value, onChange, name }) => {
   const [selectValue, setSelectValue] = useState(value);
 
   const handleChange = (value) => {
@@ -44,9 +44,7 @@ const Select = ({ data, value, onChange, name }) => {
           style={{ "--image-url": `url(${arrowDown})` }}
         />
         <div className="peer-focus:scale-y-100 hover:scale-y-100 scale-y-0  origin-top max-h-[300px] transition-all duration-300 ease-out overflow-y-scroll top-[100%] left-0 right-0 absolute backdrop-blur-md bg-opacity-60 bg-lightPink p-4 rounded-md shadow-sm flex flex-col">
-          {data.map((option, index) => (
-            <Option option={option} key={index} />
-          ))}
+          {children}
         </div>
       </div>
     </SelectContext.Provider>

@@ -80,7 +80,6 @@ export const updateItem = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         }
       );
 

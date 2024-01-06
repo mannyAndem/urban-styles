@@ -20,7 +20,6 @@ export const fetchProducts = createAsyncThunk(
           limit: LIMIT,
         },
       });
-      console.log(response);
       return response.data;
     } catch (err) {
       console.error(err); //DELETE BEFORE PUSHING TO PROD!!!

@@ -9,6 +9,8 @@ const initialState = {
   loginError: null,
   signupError: null,
   logoutError: null,
+  addAddressStatus: "idle",
+  addAddressError: null,
 };
 
 export const signup = createAsyncThunk("customer/signup", async (data) => {
@@ -53,6 +55,35 @@ export const login = createAsyncThunk(
       }
 
       return rejectWithValue("Something went wrong.");
+    }
+  }
+);
+
+export const addAddress = createAsyncThunk(
+  "customer/addAddress",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    const address = {
+      address: { ...data },
+    };
+    try {
+      const response = await axios.post(
+        "/customers/me/addresses",
+        JSON.stringify(address),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+      return fulfillWithValue(response.data.customer);
+    } catch (err) {
+      console.error(err);
+      if (err.code === "ERR_NETWORK") {
+        return rejectWithValue("Can't connect to the internet");
+      }
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -119,6 +150,17 @@ export const customerSlice = createSlice({
       state.logoutStatus = "success";
       state.data = null;
     });
+    builder.addCase(addAddress.pending, (state) => {
+      state.addAddressStatus = "pending";
+    });
+    builder.addCase(addAddress.fulfilled, (state, action) => {
+      state.addAddressStatus = "success";
+      state.data = action.payload;
+    });
+    builder.addCase(addAddress.rejected, (state, action) => {
+      state.addAddressStatus = "error";
+      state.addAddressError = action.payload;
+    });
   },
 });
 
@@ -128,6 +170,10 @@ export const { resetLoginStatus, resetSignupStatus, resetLogoutStatus } =
 export default customerSlice.reducer;
 
 export const selectCustomer = (state) => state.customer.data;
+export const selectAddresses = (state) =>
+  state.customer.data.shipping_addresses;
+export const selectAddAddressStatus = (state) =>
+  state.customer.addAddressStatus;
 export const selectLoginStatus = (state) => state.customer.loginStatus;
 export const selectSignupStatus = (state) => state.customer.signupStatus;
 export const selectLogoutStatus = (state) => state.customer.logoutStatus;
