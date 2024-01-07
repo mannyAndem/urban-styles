@@ -21,8 +21,6 @@ const LoginForm = () => {
   const dispatch = useDispatch();
 
   const { state } = useLocation();
-
-  console.log(state.from);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({

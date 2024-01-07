@@ -1,27 +1,24 @@
 import CircleLoader from "react-spinners/CircleLoader";
 import Loader from "./Loader";
 
-const ButtonPrimary = ({ children, onClick, pending }) => {
-  if (pending) {
-    return (
-      <button
-        disabled
-        className="relative whitespace-nowrap px-4 w-full py-4 text-xl font-medium bg-dark text-lightPink rounded-md shadow-sm"
-      >
-        <div className="absolute top-0 left-0 right-0 bottom-0">
-          <Loader color="#FFF4F4" />
-        </div>
-        <div className="opacity-0">{children}</div>
-      </button>
-    );
-  }
+const ButtonPrimary = ({ disabled, children, onClick, pending }) => {
+  const pendingClass = pending ? "opacity-0" : "";
+  const disabledClass = disabled ? "opacity-70" : "";
 
   return (
     <button
-      onClick={onClick ? (e) => onClick(e) : null}
-      className="whitespace-nowrap px-4 w-full py-4 text-xl font-medium bg-dark text-lightPink rounded-md shadow-sm"
+      disabled={disabled || pending}
+      onClick={onClick}
+      className={`${disabledClass} relative whitespace-nowrap px-4 w-full py-4 text-xl font-medium bg-dark text-lightPink rounded-md shadow-sm `}
     >
-      {children}
+      {pending && (
+        <div className="absolute top-0 left-0 right-0 bottom-0">
+          <Loader color="#FFF4F4" />
+        </div>
+      )}
+      <div className={`${pendingClass} flex items-center justify-center`}>
+        {children}
+      </div>
     </button>
   );
 };

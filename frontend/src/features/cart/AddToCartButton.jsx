@@ -51,17 +51,6 @@ const AddToCartButton = ({ variantId, type }) => {
     return (
       <>
         <Toaster />
-        {/* <button
-          disabled={status === "pending"}
-          onClick={handleClick}
-          className={`${
-            addedVariants.indexOf(variantId) !== -1
-              ? "bg-dark"
-              : "bg-transparent"
-          } p-3 border-2 border-dark rounded-md`}
-        >
-          <img src={plusIcon} />
-        </button> */}
         <div>
           <ButtonSecondary
             onClick={handleClick}
@@ -79,9 +68,16 @@ const AddToCartButton = ({ variantId, type }) => {
   return (
     <>
       <Toaster />
-      <ButtonPrimary onClick={handleClick} pending={status === "pending"}>
-        ADD TO CART
-      </ButtonPrimary>
+      {!isInCart ? (
+        <ButtonPrimary
+          onClick={handleClick}
+          pending={status.info === "pending" && status.id === variantId}
+        >
+          ADD TO CART
+        </ButtonPrimary>
+      ) : (
+        <ButtonPrimary disabled>ADDED</ButtonPrimary>
+      )}
     </>
   );
 };

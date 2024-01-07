@@ -22,12 +22,21 @@ const Cart = () => {
   const error = useSelector(selectCartError);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (status === "idle") {
-  //     dispatch(fetchCart());
-  //   }
-  // }, [status, dispatch]);
-
+  const renderCartItems = () => {
+    if (cart.items.length === 0) {
+      return (
+        <span className="my-16 block text-center text-2xl font-medium">
+          Cart is empty :(
+        </span>
+      );
+    }
+    const cartItems = cart.items.toSorted((a, b) =>
+      a.title > b.title ? 1 : -1
+    );
+    return cartItems.map((product) => (
+      <CartProductCard key={product.id} product={product} />
+    ));
+  };
   return (
     <div className="py-24 px-16">
       <h1 className="text-midXl font-medium">Cart</h1>
@@ -35,9 +44,7 @@ const Cart = () => {
         <div className="col-span-1">
           <div className=" flex flex-col w-full">
             {status === "success" ? (
-              cart.items.map((product) => (
-                <CartProductCard key={product.id} product={product} />
-              ))
+              renderCartItems()
             ) : status === "pending" ? (
               <div className="flex items-center justify-center">
                 <Loader type="lg" />
