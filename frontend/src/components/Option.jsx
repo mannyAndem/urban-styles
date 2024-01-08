@@ -1,8 +1,5 @@
 import { useSelectContext } from "./Select";
 
-/**
- * Expects an option prop object with the properties title and value.
- */
 const Option = ({ title, value }) => {
   const { handleChange } = useSelectContext();
 

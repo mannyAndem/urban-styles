@@ -77,7 +77,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (status === "success") {
       dispatch(resetLoginStatus());
-      navigate(state.from ?? "/");
+      navigate(state?.from ?? "/");
     }
     if (status === "error") {
       toast.error(error);

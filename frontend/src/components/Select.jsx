@@ -1,5 +1,4 @@
 import arrowDown from "../assets/icons/arrow-down-icon.png";
-import Option from "./Option";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const SelectContext = createContext();
@@ -26,10 +25,8 @@ const Select = ({ children, value, onChange, name }) => {
 
   //   useEffect to synthetically fire change event when selectValue state changes
   useEffect(() => {
-    if (selectValue) {
-      const e = new Event("change");
-      inputRef.current.dispatchEvent(e);
-    }
+    const e = new Event("change");
+    inputRef.current.dispatchEvent(e);
   }, [selectValue]);
 
   return (
@@ -43,7 +40,7 @@ const Select = ({ children, value, onChange, name }) => {
           ref={inputRef}
           style={{ "--image-url": `url(${arrowDown})` }}
         />
-        <div className="peer-focus:scale-y-100 hover:scale-y-100 scale-y-0  origin-top max-h-[300px] transition-all duration-300 ease-out overflow-y-scroll top-[100%] left-0 right-0 absolute backdrop-blur-md bg-opacity-60 bg-lightPink p-4 rounded-md shadow-sm flex flex-col">
+        <div className="z-20 peer-focus:scale-y-100 hover:scale-y-100 scale-y-0  origin-top max-h-[300px] transition-all duration-300 ease-out overflow-y-scroll top-[100%] left-0 right-0 absolute backdrop-blur-md bg-opacity-60 bg-lightPink p-4 rounded-md shadow-sm flex flex-col">
           {children}
         </div>
       </div>
