@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../api/axios";
 
 const initialState = {
-  data: null, //JSON.parse(localStorage.getItem("customer")) || null,
+  data: null,
+  status: "idle",
   loginStatus: "idle",
   signupStatus: "idle",
   logoutStatus: "idle",
@@ -12,6 +13,27 @@ const initialState = {
   addAddressStatus: "idle",
   addAddressError: null,
 };
+
+export const getCustomer = createAsyncThunk(
+  "customer/get",
+  async (data, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const response = await axios.get("/auth");
+      console.log(response.data);
+      return response.data.customer;
+    } catch (err) {
+      console.error(err);
+      if (err.status === "ERR_NETWORK") {
+        return rejectWithValue("Can't connect to the internet.");
+      }
+      if (err.response?.status === 401) {
+        return fulfillWithValue(null);
+      }
+
+      return rejectWithValue("Something went wrong, please try again");
+    }
+  }
+);
 
 export const signup = createAsyncThunk("customer/signup", async (data) => {
   const details = {
@@ -43,7 +65,6 @@ export const login = createAsyncThunk(
         },
       });
       console.log(response.data.customer);
-      localStorage.setItem("customer", JSON.stringify(response.data.customer));
       return response.data.customer;
     } catch (err) {
       console.error(err);
@@ -93,7 +114,6 @@ export const logout = createAsyncThunk("customer/logout", async () => {
     const response = await axios.delete("/auth", {
       withCredentials: true,
     });
-    localStorage.removeItem("customer");
     return response.data;
   } catch (err) {
     console.error(err);
@@ -122,6 +142,16 @@ export const customerSlice = createSlice({
     },
   },
   extraReducers(builder) {
+    builder.addCase(getCustomer.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(getCustomer.rejected, (state, action) => {
+      state.status = "error";
+    });
+    builder.addCase(getCustomer.fulfilled, (state, action) => {
+      state.status = "success";
+      state.data = action.payload;
+    });
     builder.addCase(signup.pending, (state) => {
       state.signupStatus = "pending";
     });
@@ -177,6 +207,7 @@ export const {
 export default customerSlice.reducer;
 
 export const selectCustomer = (state) => state.customer.data;
+export const selectCustomerStatus = (state) => state.customer.status;
 export const selectAddresses = (state) =>
   state.customer.data.shipping_addresses;
 export const selectAddAddressStatus = (state) =>
