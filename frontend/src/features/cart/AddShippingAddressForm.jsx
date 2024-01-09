@@ -6,22 +6,21 @@ import Option from "../../components/Option";
 import Loader from "../../components/Loader";
 import { validateString } from "../../utils/formValidationFuncs";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addAddress,
-  resetAddAddressStatus,
-  selectAddAddressStatus,
-  selectCustomer,
-} from "./customerSlice";
+import { selectCustomer } from "../customer/customerSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { toast, Toaster } from "react-hot-toast";
+import {
+  addShippingAddress,
+  selectAddShippingAddressError,
+  selectAddShippingAddressStatus,
+} from "./cartSlice";
 
-const AddShippingAddressForm = () => {
+const AddShippingAddressForm = ({ nextStep }) => {
   const [countries, setCountries] = useState(null);
   const [countriesStatus, setCountriesStatus] = useState("pending");
-  const [error, setError] = useState(null);
-
   const currentUser = useSelector(selectCustomer);
-  const status = useSelector(selectAddAddressStatus);
+  const status = useSelector(selectAddShippingAddressStatus);
+  const error = useSelector(selectAddShippingAddressError);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -127,18 +126,17 @@ const AddShippingAddressForm = () => {
     }
 
     console.log(formData);
-    dispatch(addAddress(formData));
+    dispatch(addShippingAddress(formData));
   };
 
   useEffect(() => {
     if (status === "success") {
       toast.success("Address added successfully");
       resetFormData();
-      dispatch(resetAddAddressStatus());
+      nextStep();
     }
     if (status === "error") {
       toast.error(error);
-      dispatch(resetAddAddressStatus());
     }
   }, [status]);
 
@@ -177,11 +175,9 @@ const AddShippingAddressForm = () => {
               <Option
                 key={index}
                 title={country.name.common}
-                value={country.cca2}
+                value={country.cca2.toLowerCase()}
               />
             ))
-          ) : countriesStatus === "error" ? (
-            <span className="block text-red-400 text-center">{error}</span>
           ) : countriesStatus === "pending" ? (
             <Loader />
           ) : (
@@ -200,7 +196,7 @@ const AddShippingAddressForm = () => {
         />
         <InputGroup.Error error={formErrors.postal_code} />
       </InputGroup>
-      <ButtonPrimary pending={status === "pending"}>Submit</ButtonPrimary>
+      <ButtonPrimary pending={status === "pending"}>PROCEED</ButtonPrimary>
     </form>
   );
 };

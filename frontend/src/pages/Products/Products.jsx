@@ -38,6 +38,7 @@ const Products = () => {
     }
   }, [status, dispatch]);
 
+  console.log(products);
   return (
     <ScrollToTop>
       <div className="text-dark">

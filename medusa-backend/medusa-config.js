@@ -53,6 +53,13 @@ const plugins = [
       },
     },
   },
+  {
+    resolve: `medusa-payment-paystack`,
+    /** @type {import("medusa-payment-paystack").PluginOptions} */
+    options: {
+      secret_key: "sk_test_d0bfcb6a3971d50ac83aafe635ae1199576125fd",
+    },
+  },
 ];
 
 const modules = {

@@ -1,6 +1,7 @@
 import heartIcon from "../../assets/icons/heart-icon.svg";
 import { Link } from "react-router-dom";
 import AddToCartButton from "../cart/AddToCartButton";
+import { parsePriceInNgn } from "../../utils/parsePriceInNgn";
 
 const ProductCard = ({ product }) => {
   return (
@@ -18,7 +19,7 @@ const ProductCard = ({ product }) => {
         <div className="flex flex-col gap-2">
           <span className="text-xl text-gray">{product.title}</span>
           <span className="text-dark font-medium text-2xl">
-            ${product.variants[0].prices[0].amount}
+            {parsePriceInNgn(product.variants[0])}
           </span>
         </div>
         <AddToCartButton type="icon" variantId={product.variants[0].id} />

@@ -1,26 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import CartProductCard from "../../features/cart/CartProductCard";
-import Footer from "../../structure/Footer";
-import Header from "../../structure/Header";
 import {
-  fetchCart,
   selectCart,
   selectCartError,
   selectCartQuantity,
   selectCartStatus,
 } from "../../features/cart/cartSlice";
-import { useEffect } from "react";
 import CartSummary from "./components/CartSummary";
 import Input from "../../components/Input";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Loader from "../../components/Loader";
+import ButtonSecondary from "../../components/ButtonSecondary";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const status = useSelector(selectCartStatus);
   const cart = useSelector(selectCart);
   const quantity = useSelector(selectCartQuantity);
   const error = useSelector(selectCartError);
-  const dispatch = useDispatch();
 
   const renderCartItems = () => {
     if (cart.items.length === 0) {
@@ -41,8 +38,8 @@ const Cart = () => {
     <div className="py-24 px-16">
       <h1 className="text-midXl font-medium">Cart</h1>
       <div className="mt-16 grid grid-cols-2 gap-8">
-        <div className="col-span-1">
-          <div className=" flex flex-col w-full">
+        <div className="flex flex-col justify-between col-span-1">
+          <div className=" flex flex-col justify-between w-full">
             {status === "success" ? (
               renderCartItems()
             ) : status === "pending" ? (
@@ -58,12 +55,15 @@ const Cart = () => {
           <div className="mt-8 flex gap-8">
             <Input color="#5F5F5F" placeholder="Enter coupon code" />
             <div>
-              <ButtonPrimary>Apply Coupon</ButtonPrimary>
+              <ButtonSecondary>Apply Coupon</ButtonSecondary>
             </div>
           </div>
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 flex flex-col gap-16 justify-between">
           <CartSummary quantity={quantity} cart={cart} />
+          <Link to="/checkout">
+            <ButtonPrimary>PROCEED TO CHECKOUT</ButtonPrimary>
+          </Link>
         </div>
       </div>
     </div>

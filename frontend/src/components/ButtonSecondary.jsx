@@ -5,7 +5,7 @@ const ButtonSecondary = ({ children, onClick, pending, filled, disabled }) => {
     return (
       <button
         disabled
-        className="w-full text-dark p-3 bg-transparent border-2 border-dark opacity-70 relative"
+        className="w-full whitespace-nowrap text-dark p-3 bg-transparent border-2 border-dark opacity-70 relative"
       >
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <Loader />
@@ -21,7 +21,7 @@ const ButtonSecondary = ({ children, onClick, pending, filled, disabled }) => {
       onClick={onClick ? (e) => onClick(e) : null}
       className={`${
         filled ? "bg-dark" : "bg-transparent"
-      } w-full border-dark border-2 p-3 text-xl font-medium text-dark rounded-md shadow-sm`}
+      } w-full border-dark border-2 p-3 whitespace-nowrap text-xl font-medium text-dark rounded-md shadow-sm`}
     >
       {children}
     </button>

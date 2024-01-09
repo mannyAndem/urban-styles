@@ -9,12 +9,17 @@ const initialState = {
   addProductStatus: { id: null, info: "idle" },
   quantity: 0,
   addedVariants: [],
+  addShippingAddressStatus: "idle",
+  addShippingAddressError: null,
+  addShippingMethodStatus: "idle",
+  addShippingMethodError: null,
 };
 
 export const fetchCart = createAsyncThunk(
   "cart/get",
-  async (data, { getState, rejectWithValue }) => {
+  async (data, { getState, rejectWithValue, fulfillWithValue }) => {
     const cartId = getState().cart.cartId;
+    const NIGERIA_REGION_ID = "reg_01HKPZPB695H3NX0J6GKTGAAZW";
     try {
       // If the user already has a created cart, fetch the cart
       if (cartId) {
@@ -24,7 +29,14 @@ export const fetchCart = createAsyncThunk(
       }
       // If the user does not have a cart, create and return that
       else {
-        const response = await axios.post(`/carts`);
+        const data = {
+          region_id: NIGERIA_REGION_ID,
+        };
+        const response = await axios.post(`/carts`, JSON.stringify(data), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         localStorage.setItem("cartId", response.data.cart.id);
         console.log(response.data);
         return response.data.cart;
@@ -108,6 +120,70 @@ export const deleteItem = createAsyncThunk(
   }
 );
 
+// cart checkout thunks
+export const addShippingAddress = createAsyncThunk(
+  "cart/addShippingAddress",
+  async (shippingAddress, { getState, fulfillWithValue, rejectWithValue }) => {
+    console.log(shippingAddress);
+    const cartId = getState().cart.cartId;
+    console.log(cartId);
+    const data = { shipping_address: shippingAddress };
+    try {
+      const response = await axios.post(
+        `/carts/${cartId}`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+      return fulfillWithValue(response.data.cart);
+    } catch (err) {
+      console.error(err);
+      if (err.status === "ERR_NETWORK") {
+        return rejectWithValue("Can't connect to the internet.");
+      }
+
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const addShippingMethod = createAsyncThunk(
+  "cart/addShippingMethod",
+  async (option_id, { getState, rejectWithValue }) => {
+    const data = {
+      option_id,
+    };
+
+    const cartId = getState().cart.cartId;
+    try {
+      const response = await axios.post(
+        `/carts/${cartId}/shipping-methods`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+
+      return response.data.cart;
+    } catch (err) {
+      console.error(err);
+      if (err.status === "ERR_NETWORK") {
+        return rejectWithValue("Can't connect to the internet.");
+      }
+
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -121,8 +197,12 @@ export const cartSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(fetchCart.fulfilled, (state, action) => {
+      console.log(action);
       state.status = "success";
       state.data = action.payload;
+      if (state.cartId == null) {
+        state.cartId = action.payload.id;
+      }
       state.quantity = action.payload.items.reduce(
         (acc, curr) => acc + curr.quantity,
         0
@@ -166,6 +246,28 @@ export const cartSlice = createSlice({
     builder.addCase(deleteItem.rejected, (state, action) => {
       state.status = "error";
     });
+    builder.addCase(addShippingAddress.pending, (state) => {
+      state.addShippingAddressStatus = "pending";
+    });
+    builder.addCase(addShippingAddress.fulfilled, (state, action) => {
+      state.addShippingAddressStatus = "success";
+      state.data = action.payload;
+    });
+    builder.addCase(addShippingAddress.rejected, (state, action) => {
+      state.addShippingAddressStatus = "error";
+      state.addShippingAddressError = action.payload;
+    });
+    builder.addCase(addShippingMethod.pending, (state) => {
+      state.addShippingMethodStatus = "pending";
+    });
+    builder.addCase(addShippingMethod.fulfilled, (state, action) => {
+      state.addShippingMethodStatus = "success";
+      state.data = action.payload;
+    });
+    builder.addCase(addShippingMethod.rejected, (state, action) => {
+      state.addShippingMethodStatus = "error";
+      state.addShippingMethodError = action.payload;
+    });
   },
 });
 
@@ -181,3 +283,11 @@ export const selectCartError = (state) => state.cart.error;
 export const selectAddProductStatus = (state) => state.cart.addProductStatus;
 export const selectCartQuantity = (state) => state.cart.quantity;
 export const selectAddedVariants = (state) => state.cart.addedVariants;
+export const selectAddShippingAddressStatus = (state) =>
+  state.cart.addShippingAddressStatus;
+export const selectAddShippingAddressError = (state) =>
+  state.cart.addShippingAddressError;
+export const selectAddShippingMethodStatus = (state) =>
+  state.cart.addShippingMethodStatus;
+export const selectAddShippingMethodError = (state) =>
+  state.cart.addShippingMethodError;

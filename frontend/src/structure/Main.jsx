@@ -9,9 +9,9 @@ import Cart from "../pages/Cart/Cart";
 import Contact from "../pages/Contact/Contact";
 import ScrollToTop from "../components/ScrollToTop";
 import About from "../pages/About/About";
-import Profile from "../pages/Profile/Profile";
 import NotFound from "../pages/NotFound/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Checkout from "../pages/Checkout/Checkout";
 
 // Component wrapper to wrap all the components within a header and footer
 const Main = () => {
@@ -24,15 +24,15 @@ const Main = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/products" element={<Products />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
         <Route
-          path="/profile"
+          path="/checkout"
           element={
             <ProtectedRoute>
-              <Profile />
+              <Checkout />
             </ProtectedRoute>
           }
         />
+        <Route path="/about" element={<About />} />
         <Route
           path="/products/:id"
           element={
