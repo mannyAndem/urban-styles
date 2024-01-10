@@ -23,7 +23,7 @@ const ImageGallery = ({ images, toggleImageGallery }) => {
   return (
     <div
       onClick={toggleImageGallery}
-      className="fixed top-0 left-0 bg-gray bg-opacity-50 h-screen w-screen"
+      className="z-50 fixed top-0 left-0 bg-gray bg-opacity-50 h-screen w-screen"
     >
       <div className="py-16 h-full flex gap-8 justify-between">
         <button

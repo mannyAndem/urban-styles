@@ -5,10 +5,9 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import ImageGallery from "./components/imageGallery";
 import SizeOptions from "./components/SizeOptions";
 import ColorOptions from "./components/ColorOptions";
-import Header from "../../structure/Header";
-import Footer from "../../structure/Footer";
 import AddToCartButton from "../../features/cart/AddToCartButton";
 import Loader from "../../components/Loader";
+import { parsePriceInNgn } from "../../utils/parsePriceInNgn";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -91,13 +90,13 @@ const ProductDetails = () => {
     }
   };
 
-  const getCurrentVariantId = () => {
+  const getCurrentVariant = () => {
     if (selectedColor && selectedSize) {
       const variantText = `${selectedSize} / ${selectedColor}`;
       const variant = product.variants.find(
         (variant) => variant.title === variantText
       );
-      return variant?.id;
+      return variant;
     }
     if (selectedSize) {
       const variantText = `${selectedSize}`;
@@ -164,7 +163,7 @@ const ProductDetails = () => {
                   <h2 className="text-2xl font-medium">{product.title}</h2>
                   <p>{product.description}</p>
                   <span className="text-2xl font-medium">
-                    ${product.variants[0].prices[0].amount}
+                    {parsePriceInNgn(getCurrentVariant())}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -188,7 +187,7 @@ const ProductDetails = () => {
                     ADD TO WISHLIST
                   </button>
                   <AddToCartButton
-                    variantId={getCurrentVariantId()}
+                    variantId={getCurrentVariant()?.id}
                     type="regular"
                   />
                 </div>

@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@paystack/inline-js": "^2.13.0",
     "@reduxjs/toolkit": "^2.0.1",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",

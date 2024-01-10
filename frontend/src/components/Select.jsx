@@ -4,10 +4,16 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 const SelectContext = createContext();
 
 const Select = ({ children, value, onChange, name }) => {
-  const [selectValue, setSelectValue] = useState(value);
+  const [selectValue, setSelectValue] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
 
   const handleChange = (value) => {
     setSelectValue(value);
+  };
+
+  const handleSearchValueChange = (e) => {
+    setSelectValue(null);
+    setSearchValue(e.target.value);
   };
 
   const inputRef = useRef();
@@ -30,13 +36,13 @@ const Select = ({ children, value, onChange, name }) => {
   }, [selectValue]);
 
   return (
-    <SelectContext.Provider value={{ handleChange }}>
+    <SelectContext.Provider value={{ handleChange, searchValue }}>
       <div className="relative w-full">
         <input
           className="cursor-pointer bg-[image:var(--image-url)] bg-no-repeat bg-[right_12px_center] peer w-full p-2 rounded-md bg-transparent border text-gray border-lightGray"
           name={name}
-          value={selectValue}
-          readOnly
+          value={selectValue ?? searchValue}
+          onChange={handleSearchValueChange}
           ref={inputRef}
           style={{ "--image-url": `url(${arrowDown})` }}
         />

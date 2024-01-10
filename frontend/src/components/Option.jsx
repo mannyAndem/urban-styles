@@ -1,12 +1,19 @@
 import { useSelectContext } from "./Select";
 
 const Option = ({ title, value }) => {
-  const { handleChange } = useSelectContext();
+  const { handleChange, searchValue } = useSelectContext();
 
   if (!handleChange) {
     throw new Error(
       "Option element can only be used within the context of a Select element"
     );
+  }
+
+  if (
+    searchValue &&
+    !title.toLowerCase().startsWith(searchValue.toLowerCase())
+  ) {
+    return;
   }
 
   return (

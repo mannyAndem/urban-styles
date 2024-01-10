@@ -1,9 +1,10 @@
-const StepStatus = ({ active, completed, label, index }) => {
+const StepStatus = ({ active, completed, label, index, setCurrentStep }) => {
   return (
     <div
+      onClick={() => setCurrentStep(index)}
       className={`${
         active ? "opacity-100" : "opacity-30"
-      } w-full flex items-center`}
+      } w-full flex items-center cursor-pointer`}
     >
       <div
         className={`${

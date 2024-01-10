@@ -13,6 +13,8 @@ const initialState = {
   addShippingAddressError: null,
   addShippingMethodStatus: "idle",
   addShippingMethodError: null,
+  createPaymentSessionsStatus: "idle",
+  createPaymentSessionsError: null,
 };
 
 export const fetchCart = createAsyncThunk(
@@ -184,6 +186,42 @@ export const addShippingMethod = createAsyncThunk(
   }
 );
 
+export const createPaymentSessions = createAsyncThunk(
+  "cart/createPaymentSessions",
+  async (data, { getState, rejectWithValue }) => {
+    const cartId = getState().cart.cartId;
+    try {
+      const response = await axios.post(`/carts/${cartId}/payment-sessions`);
+      console.log(response.data.cart);
+      return response.data.cart;
+    } catch (err) {
+      console.error(err);
+      if (err.code === "ERR_NETWORK") {
+        return rejectWithValue("Can't connect to the internet");
+      }
+
+      return rejectWithValue("An error occurred");
+    }
+  }
+);
+
+export const completeCart = createAsyncThunk(
+  "cart/complete",
+  async (data, { getState, rejectWithValue }) => {
+    const cartId = getState().cart.cartId;
+    try {
+      const response = await axios.get(``); //add the url
+      return response.data;
+    } catch (err) {
+      if (err.code === "ERR_NETWORK") {
+        return rejectWithValue("Could not connect to the internet");
+      }
+
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -200,9 +238,7 @@ export const cartSlice = createSlice({
       console.log(action);
       state.status = "success";
       state.data = action.payload;
-      if (state.cartId == null) {
-        state.cartId = action.payload.id;
-      }
+      state.cartId = action.payload.id;
       state.quantity = action.payload.items.reduce(
         (acc, curr) => acc + curr.quantity,
         0
@@ -268,6 +304,17 @@ export const cartSlice = createSlice({
       state.addShippingMethodStatus = "error";
       state.addShippingMethodError = action.payload;
     });
+    builder.addCase(createPaymentSessions.pending, (state) => {
+      state.createPaymentSessionsStatus = "pending";
+    });
+    builder.addCase(createPaymentSessions.fulfilled, (state, action) => {
+      state.createPaymentSessionsStatus = "success";
+      state.data = action.payload;
+    });
+    builder.addCase(createPaymentSessions.rejected, (state, action) => {
+      state.createPaymentSessionsStatus = "error";
+      state.createPaymentSessionsError = action.payload;
+    });
   },
 });
 
@@ -291,3 +338,7 @@ export const selectAddShippingMethodStatus = (state) =>
   state.cart.addShippingMethodStatus;
 export const selectAddShippingMethodError = (state) =>
   state.cart.addShippingMethodError;
+export const selectCreatePaymentSessionsStatus = (state) =>
+  state.cart.createPaymentSessionsStatus;
+export const selectCreatePaymentSessionsError = (state) =>
+  state.cart.createPaymentSessionsError;

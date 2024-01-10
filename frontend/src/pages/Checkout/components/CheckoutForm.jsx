@@ -5,17 +5,18 @@ import StepStatus from "./StepStatus";
 import PaymentForm from "../../../features/cart/PaymentForm";
 
 const CheckoutForm = () => {
-  const [currentStep, setCurrentStep] = useState(
-    localStorage.getItem("checkoutStep") || 0
-  );
+  const [currentStep, setCurrentStep] = useState(0);
+  // const [currentStep, setCurrentStep] = useState(
+  //   localStorage.getItem("checkoutStep") || 0
+  // );
 
   const nextStep = () => {
     setCurrentStep((prev) => prev + 1);
   };
 
-  useEffect(() => {
-    localStorage.setItem("checkoutStep", currentStep);
-  }, [currentStep]);
+  // useEffect(() => {
+  //   localStorage.setItem("checkoutStep", currentStep);
+  // }, [currentStep]);
 
   const steps = [
     {
@@ -38,6 +39,7 @@ const CheckoutForm = () => {
         {steps.map((step, index) => (
           <StepStatus
             key={index}
+            setCurrentStep={setCurrentStep}
             label={step.label}
             completed={currentStep > index}
             active={index === currentStep}

@@ -20,7 +20,7 @@ const CartProductCard = ({ product }) => {
         <div className="flex flex-col gap-8 justify-center">
           <span className="text-2xl text-gray">{product.title}</span>
           <span className="text-2xl font-medium">
-            N{product.total.toLocaleString()}
+            N{product.subtotal.toLocaleString()}
           </span>
         </div>
         <div className="flex flex-col gap-4 items-center justify-center">
