@@ -15,6 +15,8 @@ const initialState = {
   addShippingMethodError: null,
   createPaymentSessionsStatus: "idle",
   createPaymentSessionsError: null,
+  completeCartStatus: "idle",
+  completeCartError: null,
 };
 
 export const fetchCart = createAsyncThunk(
@@ -210,9 +212,11 @@ export const completeCart = createAsyncThunk(
   async (data, { getState, rejectWithValue }) => {
     const cartId = getState().cart.cartId;
     try {
-      const response = await axios.get(``); //add the url
+      const response = await axios.post(`carts/${cartId}/complete`);
+      console.log(response.data);
       return response.data;
     } catch (err) {
+      console.error(err);
       if (err.code === "ERR_NETWORK") {
         return rejectWithValue("Could not connect to the internet");
       }
@@ -315,6 +319,14 @@ export const cartSlice = createSlice({
       state.createPaymentSessionsStatus = "error";
       state.createPaymentSessionsError = action.payload;
     });
+    builder.addCase(completeCart.fulfilled, (state, action) => {
+      state.completeCartStatus = "success";
+      state.data = action.payload;
+    });
+    builder.addCase(completeCart.rejected, (state, action) => {
+      state.completeCartStatus = "error";
+      state.completeCartError = action.payload;
+    });
   },
 });
 
@@ -342,3 +354,6 @@ export const selectCreatePaymentSessionsStatus = (state) =>
   state.cart.createPaymentSessionsStatus;
 export const selectCreatePaymentSessionsError = (state) =>
   state.cart.createPaymentSessionsError;
+export const selectCompleteCartStatus = (state) =>
+  state.cart.completeCartStatus;
+export const selectCompleteCartError = (state) => state.cart.completeCartError;

@@ -8,11 +8,12 @@ const usePayStack = () => {
   const paystack = new PaystackPop();
 
   const initiatePaystackPopup = (email, amount, ref) => {
+    console.log(ref);
     setStatus("pending");
-    return paystack.newTransaction({
+    paystack.newTransaction({
       key,
       email,
-      amount,
+      amount: amount * 100,
       ref,
       onSuccess(transaction) {
         setStatus("success");
