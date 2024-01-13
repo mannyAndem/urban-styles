@@ -12,6 +12,7 @@ import About from "../pages/About/About";
 import NotFound from "../pages/NotFound/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Checkout from "../pages/Checkout/Checkout";
+import CompleteCart from "../pages/CompleteCart/CompleteCart";
 
 // Component wrapper to wrap all the components within a header and footer
 const Main = () => {
@@ -41,6 +42,7 @@ const Main = () => {
             </ScrollToTop>
           }
         />
+        <Route path="/complete" element={<CompleteCart />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
