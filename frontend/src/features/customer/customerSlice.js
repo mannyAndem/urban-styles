@@ -21,14 +21,7 @@ export const getCustomer = createAsyncThunk(
       return response.data.customer;
     } catch (err) {
       console.error(err);
-      if (err.status === "ERR_NETWORK") {
-        return rejectWithValue("Can't connect to the internet.");
-      }
-      if (err.response?.status === 401) {
-        return fulfillWithValue(null);
-      }
-
-      return rejectWithValue("Something went wrong, please try again");
+      return fulfillWithValue(null);
     }
   }
 );
