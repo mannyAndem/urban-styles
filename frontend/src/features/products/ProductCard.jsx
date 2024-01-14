@@ -17,8 +17,8 @@ const ProductCard = ({ product }) => {
       </Link>
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
-          <span className="text-xl text-gray">{product.title}</span>
-          <span className="text-dark font-medium text-2xl">
+          <span className="lg:text-xl text-gray">{product.title}</span>
+          <span className="text-dark font-medium text-xl lg:text-2xl">
             {parsePriceInNgn(product.variants[0])}
           </span>
         </div>

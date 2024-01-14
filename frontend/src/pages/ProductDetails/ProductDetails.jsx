@@ -103,20 +103,21 @@ const ProductDetails = () => {
       const variant = product.variants.find(
         (variant) => variant.title === variantText
       );
-      return variant?.id;
+      return variant;
     }
     if (selectedColor) {
       const variantText = `${selectedColor}`;
       const variant = product.variants.find(
         (variant) => variant.title === variantText
       );
-      return variant?.id;
+      return variant;
     }
   };
+
   return (
     <div className="text-dark">
-      <section className="py-24 px-16">
-        <h1 className="text-midXl font-medium">Product Details</h1>
+      <section className="py-24 px-5 lg:px-16">
+        <h1 className="text-4xl font-medium lg:text-midXl">Product Details</h1>
         {status === "pending" ? (
           <div className="flex items-center justify-center">
             <Loader type="lg" />
@@ -134,8 +135,8 @@ const ProductDetails = () => {
                 imageGalleryVisibility={imageGalleryVisibilty}
               />
             )}
-            <div className="mt-24 flex gap-8">
-              <div className="w-1/2 grid grid-cols-3 gap-8">
+            <div className="mt-24 flex flex-col gap-8 lg:flex-row">
+              <div className="w-full grid grid-cols-3 gap-8 lg:w-1/2">
                 <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
                   <img
                     src={product.thumbnail}
@@ -158,11 +159,13 @@ const ProductDetails = () => {
                   />
                 </div>
               </div>
-              <div className="w-1/2 flex flex-col justify-between gap-16">
-                <div className="flex flex-col gap-8">
-                  <h2 className="text-2xl font-medium">{product.title}</h2>
+              <div className="w-full flex flex-col justify-between gap-16 lg:w-1/2">
+                <div className="flex flex-col gap-4 lg:gap-8">
+                  <h2 className="text-xl font-medium lg:text-2xl">
+                    {product.title}
+                  </h2>
                   <p>{product.description}</p>
-                  <span className="text-2xl font-medium">
+                  <span className="text-xl font-medium lg:text-2xl">
                     {parsePriceInNgn(getCurrentVariant())}
                   </span>
                 </div>

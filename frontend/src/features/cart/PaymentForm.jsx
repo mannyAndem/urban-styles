@@ -30,7 +30,7 @@ const PaymentForm = () => {
     initiatePaystackPopup(
       customer.email,
       cart.total,
-      cart.payment_session.data
+      cart.payment_session.data // Complete this
     );
   };
 

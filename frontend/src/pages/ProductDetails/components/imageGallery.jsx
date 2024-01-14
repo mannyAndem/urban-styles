@@ -23,9 +23,9 @@ const ImageGallery = ({ images, toggleImageGallery }) => {
   return (
     <div
       onClick={toggleImageGallery}
-      className="z-50 fixed top-0 left-0 bg-gray bg-opacity-50 h-screen w-screen"
+      className="z-50 fixed top-0 left-0 bg-gray bg-opacity-50 h-screen w-screen flex justify-center items-center"
     >
-      <div className="py-16 h-full flex gap-8 justify-between">
+      <div className="max-h-[400px] py-16 h-full flex gap-8 justify-between">
         <button
           onClick={(e) => handleEventWithoutPropagation(e, slideLeft)}
           className="bg-gray bg-opacity-20 rounded-md py-4 h-full flex justify-center items-center p-3"

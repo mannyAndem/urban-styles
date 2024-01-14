@@ -30,20 +30,28 @@ const Home = () => {
 
   return (
     <main>
-      <section className="px-16 py-24">
-        <h1 className="text-superXl font-medium text-center text-dark">
+      <section className="px-5 py-24 lg:px-16">
+        <h1 className="text-8xl font-medium text-center text-dark lg:text-superXl ">
           URBAN STYLES
         </h1>
-        <div className="flex items-center gap-8 justify-center">
-          <img src={hero2} alt="Man wearing cool tshirt" className="w-full" />
+        <div className="mt-16 flex items-center gap-8 justify-center">
+          <img
+            src={hero2}
+            alt="Man wearing cool tshirt"
+            className="w-full hidden lg:block"
+          />
           <img src={hero1} alt="Man wearing cool hoodie" className="w-full" />
-          <img src={hero3} alt="Man wearing cool tshirt" className="w-full" />
+          <img
+            src={hero3}
+            alt="Man wearing cool tshirt"
+            className="w-full hidden lg:block"
+          />
         </div>
       </section>
-      <section className="py-24 px-16 flex justify-end">
-        <div className="text-dark w-2/3 flex flex-col gap-8">
-          <h2 className="text-8xl font-medium">About</h2>
-          <p className="text-2xl font-light">
+      <section className="py-24 px-5 flex justify-end lg:px-16">
+        <div className="text-dark w-full flex flex-col gap-8 lg:w-2/3">
+          <h2 className="text-4xl lg:text-midXl font-medium">About</h2>
+          <p className="lg:text-2xl font-light">
             At Urban Styles, we're not just a fashion destination; we're a
             cultural movement. We understand that clothing isn't just something
             you wear; it's a statement, a reflection of your identity and the
@@ -51,27 +59,27 @@ const Home = () => {
           </p>
           <Link
             to="/about"
-            className="flex items-center gap-3 text-xl font-medium"
+            className="flex items-center gap-3 lg:text-xl font-medium"
           >
             <span>SEE MORE</span>
             <img src={arrowRight} alt="Right arrow" />
           </Link>
         </div>
       </section>
-      <section className="py-24 px-16">
+      <section className="py-24 px-5 lg:px-16">
         <img
           src={imgAbout}
           className="w-full object-cover"
           alt="Image of male wearing the same gray tshirt in two different poses"
         />
       </section>
-      <section className="py-24 px-16">
+      <section className="py-24 px-5 lg:px-16">
         <div className="flex justify-between items-end text-dark">
           <div className="flex flex-col gap-2">
-            <h2 className="text-midXl font-medium">New Releases</h2>
-            <span className="text-xl">All Items Available For Purchase</span>
+            <h2 className="text-4xl font-medium lg:text-midXl">New Releases</h2>
+            <span className="lg:text-xl">All Items Available For Purchase</span>
           </div>
-          <Link to="/products" className="text-xl">
+          <Link to="/products" className="lg:text-xl">
             SEE ALL
           </Link>
         </div>
@@ -89,18 +97,18 @@ const Home = () => {
           )}
         </div>
       </section>
-      <section className="py-24 px-16 ">
+      <section className="py-24 px-5 lg:px-16 ">
         <div
           style={{ "--image-url": `url(${becomeAffiliate})` }}
           className="p-16 bg-[image:var(--image-url)] flex justify-center"
         >
-          <div className="w-2/3 text-white text-center">
-            <h2 className="text-midXl font-500 mb-2">
+          <div className="w-full text-white text-center lg:w-2/3">
+            <h2 className="text-4xl font-500 mb-2 lg:text-midXl">
               Own a Store?
               <br />
               Become Our Affiliate
             </h2>
-            <p className="text-xl font-light">
+            <p className="lg:text-xl font-light">
               Become a part of the chorus and unlock exciting opportunities for
               mutual growth and success.
             </p>
@@ -108,19 +116,19 @@ const Home = () => {
               to="/contact"
               className="mx-auto mt-16 flex justify-center w-max items-center gap-4 text-white p-4 border border-white rounded-sm"
             >
-              <span className="text-xl font-medium">Contact Sales</span>
+              <span className="lg:text-xl font-medium">Contact Sales</span>
               <img src={arrowRightWhite} alt="" />
             </Link>
           </div>
         </div>
       </section>
-      <section className="py-24 px-16">
+      <section className="py-24 px-5 lg:px-16">
         <div className="flex justify-between items-end text-dark">
           <div className="flex flex-col gap-2">
-            <h2 className="text-midXl font-medium">All Products</h2>
-            <span className="text-xl">All Items Available For Purchase</span>
+            <h2 className="text-4xl font-medium lg:text-midXl">All Products</h2>
+            <span className="lg:text-xl">All Items Available For Purchase</span>
           </div>
-          <Link to="/products" className="text-xl">
+          <Link to="/products" className="lg:text-xl">
             SEE ALL
           </Link>
         </div>
@@ -138,7 +146,7 @@ const Home = () => {
           )}
         </div>
       </section>
-      <section className="py-24 px-16">
+      <section className="py-24 px-5 lg:px-16">
         <Subscribe />
       </section>
     </main>

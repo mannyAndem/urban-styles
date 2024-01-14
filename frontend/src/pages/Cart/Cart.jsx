@@ -35,9 +35,9 @@ const Cart = () => {
     ));
   };
   return (
-    <div className="py-24 px-16">
-      <h1 className="text-midXl font-medium">Cart</h1>
-      <div className="mt-16 grid grid-cols-2 gap-8">
+    <div className="py-24 px-5 lg:px-16">
+      <h1 className="text-4xl font-medium lg:text-midXl">Cart</h1>
+      <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col justify-between col-span-1">
           <div className=" flex flex-col justify-between w-full">
             {status === "success" ? (
