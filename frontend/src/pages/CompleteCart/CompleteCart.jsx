@@ -12,9 +12,10 @@ const CompleteCart = () => {
   const error = useSelector(selectCompleteCartError);
   const cart = useSelector(selectCart);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(completeCart());
-  }, []);
+
+  // useEffect(() => {
+  //   dispatch(completeCart());
+  // }, []);
 
   useEffect(() => {
     if (status === "success") {
@@ -24,7 +25,15 @@ const CompleteCart = () => {
       console.error(error);
     }
   }, [status]);
-  return <div></div>;
+  return (
+    <div>
+      <h1>Complete cart</h1>
+      <p>
+        Your payment has been successful, you can now proceed to completing your
+        cart and placing an order.
+      </p>
+    </div>
+  );
 };
 
 export default CompleteCart;

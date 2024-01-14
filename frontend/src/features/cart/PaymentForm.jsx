@@ -27,7 +27,11 @@ const PaymentForm = () => {
   const { status: paymentStatus, initiatePaystackPopup } = usePaystack();
 
   const handleClick = () => {
-    window.open(cart.payment_session.data.paystackTxAuthData.authorization_url);
+    initiatePaystackPopup(
+      customer.email,
+      cart.total,
+      cart.payment_session.data
+    );
   };
 
   useEffect(() => {
