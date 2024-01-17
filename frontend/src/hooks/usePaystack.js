@@ -24,6 +24,9 @@ const usePayStack = () => {
       onSuccess() {
         setStatus("success");
       },
+      onCancel() {
+        setStatus("error");
+      },
     });
   };
 

@@ -36,7 +36,7 @@ const PaymentForm = () => {
 
   useEffect(() => {
     if (paymentStatus === "success") {
-      toast.success("Let's goooooooooooooo");
+      dispatch(completeCart());
     }
     if (paymentStatus === "error") {
       toast.error("Could not process payment, please retry.");
@@ -49,6 +49,15 @@ const PaymentForm = () => {
       dispatch(createPaymentSessions());
     }
   }, []);
+
+  useEffect(() => {
+    if (completeCartStatus === "success") {
+      navigate("/complete");
+    }
+    if (completeCartStatus === "error") {
+      toast.error("Something went wrong");
+    }
+  }, [completeCartStatus]);
 
   return (
     <div>
@@ -89,7 +98,7 @@ const PaymentForm = () => {
       <div className="mt-16">
         <ButtonPrimary
           disabled={status === "pending"}
-          pending={completeCartStatus === "pending"}
+          pending={paymentStatus === "pending"}
           onClick={handleClick}
         >
           Pay with Paystack

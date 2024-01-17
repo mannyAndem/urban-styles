@@ -214,7 +214,11 @@ export const completeCart = createAsyncThunk(
     try {
       const response = await axios.post(`carts/${cartId}/complete`);
       console.log(response.data);
-      return response.data.data;
+      console.log(response.data);
+      if (response.data.type === "cart") {
+        throw new Error("Order not placed");
+      }
+      return response.data;
     } catch (err) {
       console.error(err);
       if (err.code === "ERR_NETWORK") {
@@ -321,7 +325,6 @@ export const cartSlice = createSlice({
     });
     builder.addCase(completeCart.fulfilled, (state, action) => {
       state.completeCartStatus = "success";
-      state.data = action.payload;
     });
     builder.addCase(completeCart.rejected, (state, action) => {
       state.completeCartStatus = "error";

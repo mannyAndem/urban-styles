@@ -16,19 +16,19 @@ const CartSummary = ({ cart, quantity }) => {
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Subtotal</span>
           <span className="font-medium text-xl">
-            N{cart?.subtotal.toLocaleString() ?? 0}
+            N{(cart?.subtotal / 100).toLocaleString() ?? 0}
           </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Taxes</span>
           <span className="font-medium text-xl">
-            N{cart?.tax_total.toLocaleString()}
+            N{(cart?.tax_total / 100).toLocaleString()}
           </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Total</span>
           <span className="font-medium text-xl">
-            N{cart?.total.toLocaleString() ?? 0}
+            N{(cart?.total / 100).toLocaleString() ?? 0}
           </span>
         </li>
       </ul>
