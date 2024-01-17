@@ -214,7 +214,7 @@ export const completeCart = createAsyncThunk(
     try {
       const response = await axios.post(`carts/${cartId}/complete`);
       console.log(response.data);
-      return response.data;
+      return response.data.data;
     } catch (err) {
       console.error(err);
       if (err.code === "ERR_NETWORK") {

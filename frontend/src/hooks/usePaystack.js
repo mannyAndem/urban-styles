@@ -1,21 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaystackPop from "@paystack/inline-js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  completeCart,
+  selectCart,
+  selectCompleteCartStatus,
+} from "../features/cart/cartSlice";
+import axios from "../api/axios";
 
 const usePayStack = () => {
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState();
 
   const key = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const paystack = new PaystackPop();
 
   const initiatePaystackPopup = (email, amount, ref) => {
-    console.log(ref);
     setStatus("pending");
     paystack.newTransaction({
       key,
       email,
-      amount: amount * 100,
+      amount,
       ref,
-      onSuccess(transaction) {
+      onSuccess() {
         setStatus("success");
       },
     });

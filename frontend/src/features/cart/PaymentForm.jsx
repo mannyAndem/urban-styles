@@ -30,20 +30,20 @@ const PaymentForm = () => {
     initiatePaystackPopup(
       customer.email,
       cart.total,
-      cart.payment_session.data // Complete this
+      cart.payment_session.data.paystackTxRef
     );
   };
 
   useEffect(() => {
     if (paymentStatus === "success") {
       toast.success("Let's goooooooooooooo");
-      dispatch(completeCart()); //DISPATCH THE COMPLETE CART ACTION, PLACE ORDER AND COMPLETE THIS FUCKING PROJECT
     }
     if (paymentStatus === "error") {
       toast.error("Could not process payment, please retry.");
     }
   }, [paymentStatus]);
 
+  console.log(status);
   useEffect(() => {
     if (!cart.payment_session) {
       dispatch(createPaymentSessions());
@@ -54,7 +54,7 @@ const PaymentForm = () => {
     <div>
       <Toaster />
       <h2 className="text-midXl">Payment Summary</h2>
-      {status === "success" ? (
+      {status !== "pending" ? (
         <ul className="mt-8 flex flex-col gap-8">
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Subtotal</span>

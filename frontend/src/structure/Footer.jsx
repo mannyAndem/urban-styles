@@ -58,7 +58,7 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className="border-y border-lightPink w-full py-8 lg:border-x">
+        <div className="border-y border-lightPink w-full py-8 lg:border-x lg:border-y-0">
           <h2 className="text-xl text-center mb-8">SOCIALS</h2>
           <ul className="flex flex-col gap-1">
             <li className="text-xl text-center">Twitter</li>
