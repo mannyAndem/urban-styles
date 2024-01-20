@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import logo from "../assets/brand/logo.png";
+import hamburger from "../assets/icons/menu.png";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -14,10 +15,9 @@ const Navbar = () => {
       <div>
         <img src={logo} />
       </div>
-      <button
-        onClick={toggleExpanded}
-        className="h-6 w-6 bg-dark lg:hidden z-30"
-      ></button>
+      <button onClick={toggleExpanded} className="lg:hidden z-30">
+        <img src={hamburger} />
+      </button>
       <ul
         className={`${
           expanded ? "scale-x-100" : "scale-x-0"

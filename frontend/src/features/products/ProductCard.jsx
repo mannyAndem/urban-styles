@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
       >
         <img src={product.thumbnail} className="w-full object-cover" />
       </Link>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between ">
         <div className="flex flex-col gap-2">
           <span className="lg:text-xl text-gray">{product.title}</span>
           <span className="text-dark font-medium text-xl lg:text-2xl">

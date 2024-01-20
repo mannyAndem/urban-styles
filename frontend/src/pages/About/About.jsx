@@ -10,10 +10,10 @@ import { Link } from "react-router-dom";
 const About = () => {
   return (
     <main className="text-dark ">
-      <section className="px-16 py-24 ">
+      <section className="px-5 py-24 lg:px-16">
         <h1 className=" font-medium text-midXl text-center">ABOUT US</h1>
       </section>
-      <section className="px-16 py-24 grid grid-cols-2 gap-8 text-2xl font-light">
+      <section className="px-5 py-24 grid grid-cols-1 gap-8 text-2xl font-light lg:grid-cols-1 lg:px-16">
         <div className="w-full flex flex-col justify-center">
           <h2 className="text-3xl font-medium mb-16">WHO WE ARE?</h2>
           <p className="my-8">
@@ -39,14 +39,6 @@ const About = () => {
         <div className="w-full overflow-hidden shadow-md rounded-md">
           <img src={aboutImg1} className="w-full object-cover" />
         </div>
-      </section>
-      <div className="py-24 px-16">
-        <div className="overflow-hidden rounded-md shadow-md w-full">
-          <img src={aboutImg2} className="w-full h-full object-cover" />
-        </div>
-      </div>
-      <section className="px-16 my-24">
-        <h2 className="text-center text-3xl font-medium mb-16">OUR PEOPLE</h2>
       </section>
     </main>
   );

@@ -7,7 +7,7 @@ const Subscribe = () => {
       className="p-5 bg-[image:var(--image-url)] flex justify-center rounded-sm shadow-sm lg:p-16"
     >
       <div className="w-full text-white text-center lg:w-2/3">
-        <h2 className="text-4xl font-500 mb-2 lg:text-midXl">
+        <h2 className="text-4xl font-500 mb-2 lg:text-midXl lg:leading-[5rem]">
           Be the First to Know About Our New Releases
         </h2>
         <p className="lg:text-xl font-light">

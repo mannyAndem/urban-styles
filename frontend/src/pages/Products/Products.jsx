@@ -11,8 +11,6 @@ import {
 } from "../../features/products/productsSlice";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Header from "../../structure/Header";
-import Footer from "../../structure/Footer";
 import ScrollToTop from "../../components/ScrollToTop";
 import Loader from "../../components/Loader";
 
@@ -42,14 +40,16 @@ const Products = () => {
   return (
     <ScrollToTop>
       <div className="text-dark">
-        <section className="py-24 px-16">
-          <div className="flex justify-between items-center">
-            <h1 className="text-midXl">All Products</h1>
-            <button className="text-xl flex items-center gap-2 px-4 py-3 border border-dark rounded-sm">
+        <section className="py-24 px-5 lg:px-16">
+          <div className="flex justify-between items-center text-dark">
+            <h2 className="text-4xl font-medium lg:text-midXl">All Products</h2>
+
+            <button className="lg:text-xl flex items-center gap-2 px-4 py-3 border border-dark rounded-sm">
               <span>Sort By</span>
               <img src={arrow} alt="" />
             </button>
           </div>
+
           <div className="my-24">
             {status === "success" ? (
               <ProductList products={products} />
@@ -63,7 +63,7 @@ const Products = () => {
               </span>
             )}
           </div>
-          <div className="mx-auto w-1/2 flex items-center justify-between">
+          <div className="mx-auto full flex items-center justify-between lg:w-1/2">
             <button
               disabled={page == 1}
               onClick={() => navigateToPage(page - 1)}
@@ -72,7 +72,7 @@ const Products = () => {
               <img src={arrow} alt="" className="transform rotate-90" />
               <span>Previous</span>
             </button>
-            <div className="font-medium flex items-center gap-6">
+            <div className="font-medium flex items-center gap-3 lg:gap-6">
               {status === "success" ? (
                 <>
                   <span className="px-4 py-2 border border-gray">{page}</span>

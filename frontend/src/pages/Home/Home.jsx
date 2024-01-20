@@ -15,8 +15,6 @@ import {
   selectProducts,
   selectProductsStatus,
 } from "../../features/products/productsSlice";
-import Header from "../../structure/Header";
-import Footer from "../../structure/Footer";
 import Loader from "../../components/Loader";
 
 const Home = () => {
@@ -103,7 +101,7 @@ const Home = () => {
           className="p-16 bg-[image:var(--image-url)] flex justify-center"
         >
           <div className="w-full text-white text-center lg:w-2/3">
-            <h2 className="text-4xl font-500 mb-2 lg:text-midXl">
+            <h2 className="text-4xl font-500 mb-2 lg:text-midXl lg:leading-[5rem]">
               Own a Store?
               <br />
               Become Our Affiliate

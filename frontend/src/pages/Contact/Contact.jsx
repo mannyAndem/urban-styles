@@ -6,7 +6,7 @@ import Form from "./components/Form";
 const Contact = () => {
   return (
     <div className="text-dark">
-      <section className="grid grid-cols-2 py-32 px-24">
+      <section className="grid grid-cols-1 py-32 px-5 lg:grid-cols-2 lg:px-16">
         <div className="w-full">
           <h1 className="text-midXl">Get in Touch</h1>
           <span className="block text-xl">
@@ -18,7 +18,7 @@ const Contact = () => {
         </div>
         <div className="w-full"></div>
       </section>
-      <section className="py-24 px-16">
+      <section className="py-24 px-5 lg:px-16">
         <h2 className="text-midXl text-center">FAQs</h2>
         <span className="block text-xl text-center">
           Questions You Might Want To Ask

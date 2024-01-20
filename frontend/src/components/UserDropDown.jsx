@@ -16,26 +16,20 @@ const UserDropDown = () => {
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-1">
-        {customer ? (
-          <Link
-            to="/profile"
-            className="w-10 h-10 bg-dark rounded-full flex justify-center items-center text-xl text-lightPink font-medium"
-          >
-            {customer.first_name[0].toUpperCase()}
-          </Link>
-        ) : (
-          <img src={userIcon} />
-        )}
-        <button onClick={toggleDropDownVisible}>
+      <button
+        onClick={toggleDropDownVisible}
+        className="flex items-center gap-1"
+      >
+        <img src={userIcon} />
+        <div>
           <img
             src={arrowDown}
             className={`${
               dropDownVisible ? "rotate-180" : ""
             } transform transition duration-300 ease-out`}
           />
-        </button>
-      </div>
+        </div>
+      </button>
       <div
         className={`${
           dropDownVisible ? "scale-y-100" : "scale-y-0"
