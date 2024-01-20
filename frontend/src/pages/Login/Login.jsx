@@ -5,8 +5,8 @@ import LoginForm from "../../features/customer/LoginForm";
 
 const Login = () => {
   return (
-    <div className="flex  text-dark">
-      <div className="w-full">
+    <div className="flex text-dark">
+      <div className="w-full hidden lg:block">
         <img
           src={loginImg}
           className="w-full h-full object-cover"

@@ -35,7 +35,7 @@ const CheckoutForm = () => {
 
   return (
     <div className="my-24">
-      <div className="flex items-center">
+      <div className="hidden items-center lg:flex">
         {steps.map((step, index) => (
           <StepStatus
             key={index}
@@ -47,7 +47,9 @@ const CheckoutForm = () => {
           />
         ))}
       </div>
-      <div className="mt-24 w-1/2 mx-auto">{steps[currentStep].component}</div>
+      <div className="mt-24 w-full mx-auto lg:w-1/2">
+        {steps[currentStep].component}
+      </div>
     </div>
   );
 };

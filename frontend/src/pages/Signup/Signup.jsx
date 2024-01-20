@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const Signup = () => {
   return (
     <div className="flex  text-dark">
-      <div className="w-full">
+      <div className="w-full hidden lg:block">
         <img
           src={signupImg}
           className="w-full h-full object-cover"

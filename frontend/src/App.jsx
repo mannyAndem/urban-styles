@@ -20,7 +20,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-lightPink">
+    <div className="min-h-screen bg-lightPink">
       {status === "success" ? (
         <Routes>
           <Route path="/*" element={<Main />} />

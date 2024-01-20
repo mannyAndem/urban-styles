@@ -13,7 +13,7 @@ const About = () => {
       <section className="px-5 py-24 lg:px-16">
         <h1 className=" font-medium text-midXl text-center">ABOUT US</h1>
       </section>
-      <section className="px-5 py-24 grid grid-cols-1 gap-8 text-2xl font-light lg:grid-cols-1 lg:px-16">
+      <section className="px-5 py-24 grid grid-cols-1 gap-8 text-2xl font-light lg:grid-cols-2 lg:px-16">
         <div className="w-full flex flex-col justify-center">
           <h2 className="text-3xl font-medium mb-16">WHO WE ARE?</h2>
           <p className="my-8">
