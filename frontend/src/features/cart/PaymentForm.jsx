@@ -22,7 +22,6 @@ const PaymentForm = () => {
   const customer = useSelector(selectCustomer);
   const cart = useSelector(selectCart);
   console.log(cart);
-  console.log(status);
 
   const { status: paymentStatus, initiatePaystackPopup } = usePaystack();
 
@@ -43,11 +42,8 @@ const PaymentForm = () => {
     }
   }, [paymentStatus]);
 
-  console.log(status);
   useEffect(() => {
-    if (!cart.payment_session) {
-      dispatch(createPaymentSessions());
-    }
+    dispatch(createPaymentSessions());
   }, []);
 
   useEffect(() => {
@@ -55,7 +51,7 @@ const PaymentForm = () => {
       navigate("/complete");
     }
     if (completeCartStatus === "error") {
-      toast.error("Something went wrong");
+      toast.error("Could not place order");
     }
   }, [completeCartStatus]);
 
@@ -68,25 +64,25 @@ const PaymentForm = () => {
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Subtotal</span>
             <span className="font-medium text-xl">
-              N{cart?.subtotal?.toLocaleString() ?? 0}
+              N{(cart?.subtotal / 100).toLocaleString() ?? 0}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Shipping Fees</span>
             <span className="font-medium text-xl">
-              N{cart?.shipping_total?.toLocaleString()}
+              N{(cart?.shipping_total / 100).toLocaleString()}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Taxes</span>
             <span className="font-medium text-xl">
-              N{cart?.tax_total?.toLocaleString()}
+              N{(cart?.tax_total / 100).toLocaleString()}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Total</span>
             <span className="font-medium text-xl">
-              N{cart?.total?.toLocaleString() ?? 0}
+              N{(cart?.total / 100).toLocaleString() ?? 0}
             </span>
           </li>
         </ul>
@@ -101,7 +97,7 @@ const PaymentForm = () => {
           pending={paymentStatus === "pending"}
           onClick={handleClick}
         >
-          Pay with Paystack
+          Place order
         </ButtonPrimary>
       </div>
     </div>

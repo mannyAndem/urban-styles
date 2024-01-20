@@ -212,12 +212,9 @@ export const completeCart = createAsyncThunk(
   async (data, { getState, rejectWithValue }) => {
     const cartId = getState().cart.cartId;
     try {
-      const response = await axios.post(`carts/${cartId}/complete`);
+      const response = await axios.post(`/carts/${cartId}/complete`);
       console.log(response.data);
       console.log(response.data);
-      if (response.data.type === "cart") {
-        throw new Error("Order not placed");
-      }
       return response.data;
     } catch (err) {
       console.error(err);

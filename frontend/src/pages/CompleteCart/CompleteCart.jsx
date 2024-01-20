@@ -1,39 +1,26 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  completeCart,
-  selectCart,
-  selectCompleteCartError,
-  selectCompleteCartStatus,
-} from "../../features/cart/cartSlice";
+import { Link } from "react-router-dom";
+import arrowRight from "../../assets/icons/arrow-right-white.svg";
 
-const CompleteCart = () => {
-  const status = useSelector(selectCompleteCartStatus);
-  const error = useSelector(selectCompleteCartError);
-  const cart = useSelector(selectCart);
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(completeCart());
-  // }, []);
-
-  useEffect(() => {
-    if (status === "success") {
-      console.log(cart);
-    }
-    if (status === "error") {
-      console.error(error);
-    }
-  }, [status]);
+const OrderComplete = () => {
   return (
-    <div>
-      <h1>Complete cart</h1>
-      <p>
-        Your payment has been successful, you can now proceed to completing your
-        cart and placing an order.
-      </p>
+    <div className="text-lightPink py-24 flex justify-center items-center">
+      <div className="bg-dark border-2 border-dark rounded-md p-16 max-w-[600px] shadow-md flex flex-col gap-4">
+        <h1 className="text-midXl mb-8">Order Successful!</h1>
+        <p className="text-2xl">
+          Your order was successfully placed and will be shipped between 3 to 5
+          business days.
+        </p>
+        <p className="text-2xl">Thank you for shopping at Urban Styles!</p>
+        <Link
+          to="/"
+          className="mt-8 flex items-center gap-3 lg:text-xl font-medium"
+        >
+          <span>BACK TO HOME</span>
+          <img src={arrowRight} alt="Right arrow" />
+        </Link>
+      </div>
     </div>
   );
 };
 
-export default CompleteCart;
+export default OrderComplete;
