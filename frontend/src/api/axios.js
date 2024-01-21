@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://localhost:9000/store",
+  baseURL: import.meta.env.BACKEND_URL,
   withCredentials: true,
 });
