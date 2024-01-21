@@ -27,8 +27,8 @@ const ADMIN_CORS =
 
 // CORS to avoid issues when consuming Medusa from a client
 // const STORE_CORS = process.env.STORE_CORS || "http://localhost:5173";
-const STORE_CORS = "http://localhost:5173";
-// const STORE_CORS = "https://urban-styles.vercel.app";
+// const STORE_CORS = "http://localhost:5173";
+const STORE_CORS = "https://urban-styles.vercel.app";
 
 const DATABASE_URL =
   process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
@@ -44,17 +44,17 @@ const plugins = [
       upload_dir: "uploads",
     },
   },
-  {
-    resolve: "@medusajs/admin",
-    /** @type {import('@medusajs/admin').PluginOptions} */
-    options: {
-      autoRebuild: true,
-      develop: {
-        // open: process.env.OPEN_BROWSER !== "false",
-        open: false,
-      },
-    },
-  },
+  // {
+  //   resolve: "@medusajs/admin",
+  //   /** @type {import('@medusajs/admin').PluginOptions} */
+  //   options: {
+  //     autoRebuild: true,
+  //     develop: {
+  //       // open: process.env.OPEN_BROWSER !== "false",
+  //       open: false,
+  //     },
+  //   },
+  // },
   {
     resolve: `medusa-payment-paystack`,
     /** @type {import("medusa-payment-paystack").PluginOptions} */
@@ -65,18 +65,18 @@ const plugins = [
 ];
 
 const modules = {
-  /*eventBus: {
+  eventBus: {
     resolve: "@medusajs/event-bus-redis",
     options: {
-      redisUrl: REDIS_URL
-    }
+      redisUrl: REDIS_URL,
+    },
   },
   cacheService: {
     resolve: "@medusajs/cache-redis",
     options: {
-      redisUrl: REDIS_URL
-    }
-  },*/
+      redisUrl: REDIS_URL,
+    },
+  },
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
