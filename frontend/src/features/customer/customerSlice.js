@@ -41,7 +41,6 @@ export const signup = createAsyncThunk("customer/signup", async (data) => {
     });
     return response.data.customer;
   } catch (err) {
-    console.error(err); //DELETE BEFORE PUSHING TO PROD!!!
     return Promise.reject(err);
   }
 });

@@ -107,7 +107,6 @@ const SignupForm = () => {
     }
   }, [status]);
 
-  console.log(formData);
   return (
     <form onSubmit={handleSubmit}>
       {status === "error" && (
@@ -115,7 +114,7 @@ const SignupForm = () => {
           Failed to create account
         </span>
       )}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <InputGroup>
           <InputGroup.Label htmlFor="firstName">First Name</InputGroup.Label>
           <InputGroup.Input
