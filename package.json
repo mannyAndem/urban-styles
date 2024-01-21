@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@medusajs/cache-redis": "^1.9.0",
+    "@medusajs/event-bus-redis": "^1.8.10"
+  }
+}
