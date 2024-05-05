@@ -1,29 +1,50 @@
+import { createContext, useContext } from "react";
 import Input from "./Input";
 
-const InputGroup = ({ children }) => {
-  return <div className="text-dark flex flex-col gap-4">{children}</div>;
+const InputGroupContext = createContext(null);
+
+const useInputGroupContext = () => useContext(InputGroupContext);
+
+const InputGroup = ({ children, name, error, id }) => {
+  return (
+    <InputGroupContext.Provider value={{ name, error, id }}>
+      <div className="text-dark flex flex-col gap-4">
+        {children}
+        {error && (
+          <span className="text-sm font-medium text-red-400">{error}</span>
+        )}
+      </div>
+    </InputGroupContext.Provider>
+  );
 };
 
-InputGroup.Label = ({ children, htmlFor }) => {
+InputGroup.Label = ({ children }) => {
+  const { name, id } = useInputGroupContext();
+
   return (
-    <label htmlFor={htmlFor} className="font-medium">
+    <label htmlFor={id ? id : name} className="font-medium">
       {children}
     </label>
   );
 };
 
-InputGroup.Input = ({ type, name, placeholder, value, onChange }) => {
+InputGroup.Input = ({ type, placeholder, value, onChange }) => {
+  const { name, id, error } = useInputGroupContext();
+
   return (
     <Input
       type={type}
+      id={id ? id : name}
       name={name}
       placeholder={placeholder}
       value={value}
       onChange={onChange}
+      invalid={!!error}
     />
   );
 };
 
+// Remove once you've fixed the components that require it.
 InputGroup.Error = ({ error }) => {
   return (
     error && <span className="text-sm font-medium text-red-400">{error}</span>

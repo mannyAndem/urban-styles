@@ -1,181 +1,121 @@
-import { useEffect, useState } from "react";
-import {
-  validateEmail,
-  validateString,
-  validatePassword,
-} from "../../utils/formValidationFuncs";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { resetSignupStatus, selectSignupStatus, signup } from "./customerSlice";
-
 import InputGroup from "../../components/InputGroup";
 import ButtonPrimary from "../../components/ButtonPrimary";
+import * as yup from "yup";
+import { Formik } from "formik";
+import { useSignupMutation } from "../api/apiSlice";
+import { useEffect } from "react";
+import { setCustomer } from "./customerSlice";
+import toast, { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 const SignupForm = () => {
-  const status = useSelector(selectSignupStatus);
+  const [signup, { isLoading, isError, isSuccess, error, data }] =
+    useSignupMutation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+  const initialValues = {
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
-    confirmPassword: "",
-    // IMPLEMENT PHONE NUMBER LOGIC THEN ADD PHONE NUMBER TO FORM STATE!!!
+    confirm_password: "",
+  };
+
+  const formSchema = yup.object().shape({
+    first_name: yup.string().required("First name is required"),
+    last_name: yup.string().required("Last name is required"),
+    email: yup.string().required("Email is required").email("Invalid email"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(6, "Password must be atleast 6 characters"),
+    confirm_password: yup
+      .string()
+      .required("Confirm password is required")
+      .oneOf([yup.ref("password")], "Passwords must match"),
   });
 
-  const [formErrors, setFormErrors] = useState({
-    firstName: null,
-    lastName: null,
-    email: null,
-    password: null,
-    confirmPassword: null,
-  });
-
-  const handleFormDataChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const resetFormErrors = () => {
-    setFormErrors({
-      firstName: null,
-      lastName: null,
-      email: null,
-      password: null,
-      confirmPassword: null,
-    });
-  };
-
-  const validateForm = () => {
-    resetFormErrors();
-
-    const validFirstName = validateString(formData.firstName);
-    const validLastName = validateString(formData.lastName);
-    const validEmail = validateEmail(formData.email);
-    const validPassword = validatePassword(formData.password);
-    const validConfirmPassword = formData.password === formData.confirmPassword;
-
-    if (!validFirstName) {
-      setFormErrors((prev) => ({ ...prev, firstName: "Field is required" }));
-    }
-    if (!validLastName) {
-      setFormErrors((prev) => ({ ...prev, lastName: "Field is required" }));
-    }
-    if (!validEmail) {
-      setFormErrors((prev) => ({ ...prev, email: "Invalid email address" }));
-    }
-    if (!validPassword) {
-      setFormErrors((prev) => ({
-        ...prev,
-        password: "Password must be atleast 6 characters long",
-      }));
-    }
-    if (!validConfirmPassword) {
-      setFormErrors((prev) => ({
-        ...prev,
-        confirmPassword: "Passwords must match",
-      }));
-    }
-
-    return (
-      validFirstName &&
-      validLastName &&
-      validEmail &&
-      validPassword &&
-      validConfirmPassword
-    );
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const validForm = validateForm();
-
-    if (!validForm) {
-      return;
-    }
-
-    dispatch(signup(formData));
+  const handleSubmit = (values) => {
+    const { confirm_password, ...data } = values;
+    signup(data);
   };
 
   useEffect(() => {
-    if (status === "success") {
-      dispatch(resetSignupStatus());
-      navigate("/");
+    if (isSuccess) {
+      dispatch(setCustomer(data.customer));
+      toast.success("Account created successfully");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
-  }, [status]);
+    if (isError) {
+      toast.error("We couldn't create your account");
+    }
+  }, [isSuccess, isError, error]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === "error" && (
-        <span className="block text-xl text-red-400 text-center">
-          Failed to create account
-        </span>
-      )}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <InputGroup>
-          <InputGroup.Label htmlFor="firstName">First Name</InputGroup.Label>
-          <InputGroup.Input
-            name="firstName"
-            placeholder="John"
-            value={formData.firstName}
-            onChange={handleFormDataChange}
-          />
-          <InputGroup.Error error={formErrors.firstName} />
-        </InputGroup>
-        <InputGroup>
-          <InputGroup.Label htmlFor="lastName">Last Name</InputGroup.Label>
-          <InputGroup.Input
-            name="lastName"
-            placeholder="Doe"
-            value={formData.lastName}
-            onChange={handleFormDataChange}
-          />
-          <InputGroup.Error error={formErrors.lastName} />
-        </InputGroup>
-        <InputGroup>
-          <InputGroup.Label htmlFor="email">Email</InputGroup.Label>
-          <InputGroup.Input
-            name="email"
-            placeholder="johndoe24@example.com"
-            value={formData.email}
-            onChange={handleFormDataChange}
-          />
-          <InputGroup.Error error={formErrors.email} />
-        </InputGroup>
-        <InputGroup>
-          <InputGroup.Label htmlFor="phone">Phone</InputGroup.Label>
-          <InputGroup.Input name="phone" placeholder="+234 111 333 4444" />
-        </InputGroup>
-        <InputGroup>
-          <InputGroup.Label htmlFor="password">Password</InputGroup.Label>
-          <InputGroup.Input
-            name="password"
-            placeholder="Atleast 6 characters"
-            value={formData.password}
-            onChange={handleFormDataChange}
-          />
-          <InputGroup.Error error={formErrors.password} />
-        </InputGroup>
-        <InputGroup>
-          <InputGroup.Label htmlFor="confirmPassword">
-            Confirm Password
-          </InputGroup.Label>
-          <InputGroup.Input
-            name="confirmPassword"
-            placeholder="Should match password"
-            value={formData.confirmPassword}
-            onChange={handleFormDataChange}
-          />
-          <InputGroup.Error error={formErrors.confirmPassword} />
-        </InputGroup>
-      </div>
-      <div className="mt-16 flex justify-center">
-        <ButtonPrimary>CREATE ACCOUNT</ButtonPrimary>
-      </div>
-    </form>
+    <>
+      <Toaster />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={formSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, errors, handleSubmit, handleChange }) => (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+              <InputGroup name="first_name">
+                <InputGroup.Label>First Name</InputGroup.Label>
+                <InputGroup.Input
+                  placeholder="John"
+                  value={values.first_name}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+              <InputGroup name="last_name">
+                <InputGroup.Label>Last Name</InputGroup.Label>
+                <InputGroup.Input
+                  placeholder="Doe"
+                  value={values.last_name}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+            </div>
+            <InputGroup name="email">
+              <InputGroup.Label>Email</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="johndoe@example.com"
+                value={values.email}
+                onChange={handleChange}
+              />
+            </InputGroup>
+            <InputGroup name="password">
+              <InputGroup.Label>Password</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="Enter Password"
+                type="password"
+                value={values.password}
+                onChange={handleChange}
+              />
+            </InputGroup>
+            <InputGroup name="confirm_password">
+              <InputGroup.Label>Confirm Password</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="Confirm Password"
+                value={values.confirm_password}
+                onChange={handleChange}
+                type="password"
+              />
+            </InputGroup>
+            <div className="mt-16 flex justify-center">
+              <ButtonPrimary pending={isLoading}>CREATE ACCOUNT</ButtonPrimary>
+            </div>
+          </form>
+        )}
+      </Formik>
+    </>
   );
 };
 

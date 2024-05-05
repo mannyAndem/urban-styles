@@ -17,6 +17,9 @@ switch (process.env.NODE_ENV) {
     break;
 }
 
+// THIS IS THE ORIGINAL BUILD SCRIPT
+// "build": "cross-env npm run clean && npm run build:server && npm run build:admin",
+
 try {
   dotenv.config({ path: process.cwd() + "/" + ENV_FILE_NAME });
 } catch (e) {}
@@ -26,9 +29,7 @@ const ADMIN_CORS =
   process.env.ADMIN_CORS || "http://localhost:7000,http://localhost:7001";
 
 // CORS to avoid issues when consuming Medusa from a client
-// const STORE_CORS = process.env.STORE_CORS || "http://localhost:5173";
-// const STORE_CORS = "http://localhost:5173";
-const STORE_CORS = "https://urban-styles.vercel.app";
+const STORE_CORS = process.env.STORE_CORS;
 
 const DATABASE_URL =
   process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
@@ -44,17 +45,17 @@ const plugins = [
       upload_dir: "uploads",
     },
   },
-  {
-    resolve: "@medusajs/admin",
-    /** @type {import('@medusajs/admin').PluginOptions} */
-    options: {
-      autoRebuild: false,
-      develop: {
-        // open: process.env.OPEN_BROWSER !== "false",
-        open: false,
-      },
-    },
-  },
+  // {
+  //   resolve: "@medusajs/admin",
+  //   /** @type {import('@medusajs/admin').PluginOptions} */
+  //   options: {
+  //     autoRebuild: false,
+  //     develop: {
+  //       // open: process.env.OPEN_BROWSER !== "false",
+  //       open: false,
+  //     },
+  //   },
+  // },
   {
     resolve: `medusa-payment-paystack`,
     /** @type {import("medusa-payment-paystack").PluginOptions} */
@@ -65,18 +66,18 @@ const plugins = [
 ];
 
 const modules = {
-  eventBus: {
-    resolve: "@medusajs/event-bus-redis",
-    options: {
-      redisUrl: REDIS_URL,
-    },
-  },
-  cacheService: {
-    resolve: "@medusajs/cache-redis",
-    options: {
-      redisUrl: REDIS_URL,
-    },
-  },
+  // eventBus: {
+  //   resolve: "@medusajs/event-bus-redis",
+  //   options: {
+  //     redisUrl: REDIS_URL,
+  //   },
+  // },
+  // cacheService: {
+  //   resolve: "@medusajs/cache-redis",
+  //   options: {
+  //     redisUrl: REDIS_URL,
+  //   },
+  // },
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
@@ -87,7 +88,7 @@ const projectConfig = {
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   // Uncomment the following lines to enable REDIS
-  redis_url: REDIS_URL,
+  // redis_url: REDIS_URL,
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
