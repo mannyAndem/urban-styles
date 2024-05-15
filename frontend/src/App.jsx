@@ -5,30 +5,38 @@ import Main from "./structure/Main";
 import NotFound from "./pages/NotFound/NotFound";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getCustomer,
-  selectCustomerStatus,
-} from "./features/customer/customerSlice";
+import { selectRegion, setCustomer } from "./features/customer/customerSlice";
 import Loader from "./components/Loader";
+import { useGetCustomerQuery } from "./features/api/apiSlice";
+import SelectRegion from "./features/customer/SelectRegion";
 
 function App() {
+  const { data, isSuccess, isError, isLoading, error } = useGetCustomerQuery();
   const dispatch = useDispatch();
-  const status = useSelector(selectCustomerStatus);
+
+  const region = useSelector(selectRegion);
 
   useEffect(() => {
-    dispatch(getCustomer());
-  }, []);
+    if (isSuccess) {
+      dispatch(setCustomer(data.customer));
+    }
+    if (isError) {
+      dispatch(setCustomer(null));
+    }
+  }, [isSuccess, isError]);
 
   return (
-    <div className="min-h-screen bg-lightPink">
-      {status === "success" ? (
+    <div className="min-h-screen bg-lightPink overflow-x-hidden">
+      {!region ? (
+        <SelectRegion />
+      ) : isSuccess || isError ? (
         <Routes>
           <Route path="/*" element={<Main />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      ) : status === "pending" ? (
+      ) : isLoading ? (
         <div className="h-screen">
           <Loader type="lg" />
         </div>

@@ -3,12 +3,10 @@ import axios from "../../api/axios";
 
 const initialState = {
   data: null,
-  status: "idle",
   cartId: localStorage.getItem("cartId") || null,
   error: null,
-  addProductStatus: { id: null, info: "idle" },
   quantity: 0,
-  addedVariants: [],
+  addedVariants: localStorage.getItem("added_variants") ?? [],
   addShippingAddressStatus: "idle",
   addShippingAddressError: null,
   addShippingMethodStatus: "idle",
@@ -18,68 +16,6 @@ const initialState = {
   completeCartStatus: "idle",
   completeCartError: null,
 };
-
-export const fetchCart = createAsyncThunk(
-  "cart/get",
-  async (data, { getState, rejectWithValue, fulfillWithValue }) => {
-    const cartId = getState().cart.cartId;
-    const NIGERIA_REGION_ID = "reg_01HKPZPB695H3NX0J6GKTGAAZW";
-    try {
-      // If the user already has a created cart, fetch the cart
-      if (cartId) {
-        const response = await axios.get(`/carts/${cartId}`);
-        console.log(response.data.cart);
-        return response.data.cart;
-      }
-      // If the user does not have a cart, create and return that
-      else {
-        const data = {
-          region_id: NIGERIA_REGION_ID,
-        };
-        const response = await axios.post(`/carts`, JSON.stringify(data), {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        localStorage.setItem("cartId", response.data.cart.id);
-        console.log(response.data);
-        return response.data.cart;
-      }
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue("An error occured");
-    }
-  }
-);
-
-export const addProductToCart = createAsyncThunk(
-  "cart/addItem",
-  async (variantId, { getState, rejectWithValue, fulfillWithValue }) => {
-    const cartId = getState().cart.cartId;
-    console.log(variantId);
-    const data = {
-      variant_id: variantId,
-      quantity: 1,
-    };
-    console.log(JSON.stringify(data));
-    try {
-      const response = await axios.post(
-        `carts/${cartId}/line-items`,
-        JSON.stringify(data),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response.data.cart);
-      return fulfillWithValue({ id: variantId });
-    } catch (err) {
-      console.error(err);
-      return rejectWithValue({ id: variantId });
-    }
-  }
-);
 
 export const updateItem = createAsyncThunk(
   "cart/updateItem",
@@ -231,41 +167,12 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    resetAddProductStatus(state) {
-      state.addProductStatus = "idle";
+    updateAddedVariants: (state, action) => {
+      state.addedVariants.push(action.payload);
+      localStorage.setItem("added_variants", state.addedVariants);
     },
   },
   extraReducers(builder) {
-    builder.addCase(fetchCart.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(fetchCart.fulfilled, (state, action) => {
-      console.log(action);
-      state.status = "success";
-      state.data = action.payload;
-      state.cartId = action.payload.id;
-      state.quantity = action.payload.items.reduce(
-        (acc, curr) => acc + curr.quantity,
-        0
-      );
-      action.payload.items.forEach((item) =>
-        state.addedVariants.push(item.variant_id)
-      );
-    });
-    builder.addCase(fetchCart.rejected, (state, action) => {
-      state.status = "error";
-      state.error = action.payload;
-    });
-    builder.addCase(addProductToCart.pending, (state, action) => {
-      state.addProductStatus = { id: action.meta.arg, info: "pending" };
-    });
-    builder.addCase(addProductToCart.fulfilled, (state, action) => {
-      state.addProductStatus = { id: action.payload.id, info: "success" };
-      state.status = "idle"; // So that the components rendering the cart rerender.
-    });
-    builder.addCase(addProductToCart.rejected, (state, action) => {
-      state.addProductStatus = { id: action.payload.id, info: "error" };
-    });
     builder.addCase(updateItem.pending, (state) => {
       state.status = "pending";
     });
@@ -333,7 +240,7 @@ export const cartSlice = createSlice({
 export default cartSlice.reducer;
 
 // actions
-export const { resetAddProductStatus } = cartSlice.actions;
+export const { updateAddedVariants } = cartSlice.actions;
 
 // Selectors
 export const selectCart = (state) => state.cart.data;

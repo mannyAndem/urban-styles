@@ -3,22 +3,19 @@ import cartIcon from "../../assets/icons/cartIcon.png";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart, selectCartQuantity, selectCartStatus } from "./cartSlice";
+import { useGetCartQuery } from "../api/apiSlice";
 
 const CartLink = () => {
-  const quantity = useSelector(selectCartQuantity);
-  const status = useSelector(selectCartStatus);
-  const dispatch = useDispatch();
+  const { isSuccess, isError, isLoading, data: cart } = useGetCartQuery();
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchCart());
-    }
-  }, [dispatch, status]);
+    console.log(cart);
+  }, [cart]);
 
   return (
     <Link to="/cart" className="flex items-center gap-2">
       <img src={cartIcon} />
-      <span>({quantity})</span>
+      <span>({cart?.items?.length ?? 0})</span>
     </Link>
   );
 };

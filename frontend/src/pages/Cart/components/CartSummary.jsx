@@ -1,5 +1,6 @@
-const CartSummary = ({ cart, quantity }) => {
-  console.log(cart);
+import { formatPrice } from "../../../utils/formatPrice";
+
+const CartSummary = ({ cart }) => {
   return (
     <div className="text-dark w-full ">
       <div className="flex justify-between items-center">
@@ -8,28 +9,24 @@ const CartSummary = ({ cart, quantity }) => {
       </div>
       <ul className="mt-8 flex flex-col gap-8">
         <li className="flex items-center justify-between">
-          <span className="text-xl text-gray">Cart Item</span>
-          <span className="font-medium text-xl">
-            {quantity.toLocaleString() ?? 0}
-          </span>
+          <span className="text-xl text-gray">Cart Items</span>
+          <span className="font-medium text-xl">{cart.items.length}</span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Subtotal</span>
           <span className="font-medium text-xl">
-            N{(cart?.subtotal / 100).toLocaleString() ?? 0}
+            {formatPrice(cart.subtotal)}
           </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Taxes</span>
           <span className="font-medium text-xl">
-            N{(cart?.tax_total / 100).toLocaleString()}
+            {formatPrice(cart.tax_total)}
           </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Total</span>
-          <span className="font-medium text-xl">
-            N{(cart?.total / 100).toLocaleString() ?? 0}
-          </span>
+          <span className="font-medium text-xl">{formatPrice(cart.total)}</span>
         </li>
       </ul>
     </div>

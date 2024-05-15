@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 
 const Header = () => {
   return (
-    <header className="relative px-5 py-6 border-b border-darkGray lg:px-16">
+    <header className="relative px-5 py-6 border-b border-darkGray lg:px-16 z-10">
       <Navbar />
       <div className=" pt-6 flex justify-center gap-8 items-center lg:justify-end">
         <search className="w-full lg:w-1/3">

@@ -1,19 +1,29 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import axios from "../../api/axios";
-import ProductList from "../../features/products/ProductList";
 import { useEffect, useLayoutEffect, useState } from "react";
 import ImageGallery from "./components/imageGallery";
 import SizeOptions from "./components/SizeOptions";
 import ColorOptions from "./components/ColorOptions";
 import AddToCartButton from "../../features/cart/AddToCartButton";
 import Loader from "../../components/Loader";
-import { parsePriceInNgn } from "../../utils/parsePriceInNgn";
+import { useGetProductQuery } from "../../features/api/apiSlice";
+import { formatPrice } from "../../utils/formatPrice";
 
 const ProductDetails = () => {
-  const { id } = useParams();
+  const { handle } = useParams();
 
-  const [status, setStatus] = useState("pending");
-  const [product, setProduct] = useState(null);
+  const {
+    isSuccess,
+    isLoading,
+    data: product,
+    isError,
+    error,
+  } = useGetProductQuery(handle);
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(product);
+    }
+  }, [isSuccess]);
 
   // state to hold image gallery component visibilty
   const [imageGalleryVisibilty, setImageGalleryVisibilty] = useState(false);
@@ -21,21 +31,6 @@ const ProductDetails = () => {
   const toggleImageGallery = () => {
     setImageGalleryVisibilty((prev) => !prev);
   };
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`/products/${id}`);
-        console.log(response.data.product);
-        setProduct(response.data.product);
-        setStatus("success");
-      } catch (err) {
-        setStatus("error");
-      }
-    };
-
-    fetchProduct();
-  }, []);
 
   // function to parse and display product's available sizes
   const parseSizes = () => {
@@ -70,9 +65,9 @@ const ProductDetails = () => {
   // const selectedColor = searchParams.get("color");
 
   const selectedSize =
-    searchParams.get("size") || (status === "success" && parseSizes()[0]);
+    searchParams.get("size") || (isSuccess && parseSizes()[0]);
   const selectedColor =
-    searchParams.get("color") || (status === "success" && parseColors()[0]);
+    searchParams.get("color") || (isSuccess && parseColors()[0]);
 
   const selectColor = (color) => {
     if (selectedSize) {
@@ -118,15 +113,7 @@ const ProductDetails = () => {
     <div className="text-dark">
       <section className="py-24 px-5 lg:px-16">
         <h1 className="text-4xl font-medium lg:text-midXl">Product Details</h1>
-        {status === "pending" ? (
-          <div className="flex items-center justify-center">
-            <Loader type="lg" />
-          </div>
-        ) : status === "error" ? (
-          <span className="text-2xl text-center block text-red-300">
-            Something went wrong.
-          </span>
-        ) : (
+        {isSuccess ? (
           <>
             {imageGalleryVisibilty && (
               <ImageGallery
@@ -166,7 +153,7 @@ const ProductDetails = () => {
                   </h2>
                   <p>{product.description}</p>
                   <span className="text-xl font-medium lg:text-2xl">
-                    {parsePriceInNgn(getCurrentVariant())}
+                    {formatPrice(getCurrentVariant().calculated_price_incl_tax)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -197,6 +184,14 @@ const ProductDetails = () => {
               </div>
             </div>
           </>
+        ) : isError ? (
+          <span className="text-2xl text-center block text-red-300">
+            Something went wrong.
+          </span>
+        ) : (
+          <div className="flex items-center justify-center">
+            <Loader type="lg" />
+          </div>
         )}
       </section>
       <section className="py-24 px-16">

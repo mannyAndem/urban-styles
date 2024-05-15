@@ -3,14 +3,15 @@ import plusIcon from "../../assets/icons/plus-icon.svg";
 import plusIconLight from "../../assets/icons/plus-icon-light.svg";
 import {
   addProductToCart,
-  resetAddProductStatus,
   selectAddProductStatus,
   selectAddedVariants,
+  updateAddedVariants,
 } from "./cartSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { toast, Toaster } from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import ButtonSecondary from "../../components/ButtonSecondary";
+import { useAddLineItemMutation } from "../api/apiSlice";
 
 /**
  *
@@ -19,33 +20,37 @@ import ButtonSecondary from "../../components/ButtonSecondary";
  *  The variantId specifies the id of the variant that a line item will ultimately be generated for in the cart
  */
 const AddToCartButton = ({ variantId, type }) => {
-  const status = useSelector(selectAddProductStatus);
+  // const status = useSelector(selectAddProductStatus);
   const addedVariants = useSelector(selectAddedVariants);
   const dispatch = useDispatch();
 
-  // boolean to hold whether product is already in cart or not
-  const isInCart = addedVariants.indexOf(variantId) !== -1;
+  // // boolean to hold whether product is already in cart or not
+  const isInCart = useMemo(
+    () => addedVariants.indexOf(variantId) !== -1,
+    [addedVariants]
+  );
+
+  const [addToCart, { isSuccess, isError, isLoading, error, data }] =
+    useAddLineItemMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      dispatch(updateAddedVariants(variantId));
+      toast.success("Product added to cart");
+    }
+    if (isError) {
+      console.error(error);
+    }
+  }, [isSuccess, isError]);
 
   const handleClick = () => {
     if (!variantId) {
-      toast.error("Variant is not avaliable");
-      return;
+      toast.error("Product variant does not exist");
+    } else {
+      addToCart(variantId);
     }
-
-    dispatch(addProductToCart(variantId));
   };
-
-  useEffect(() => {
-    if (status.info === "success" && status.id === variantId) {
-      console.log("yes");
-      toast.success("Product added to cart");
-      dispatch(resetAddProductStatus());
-    }
-    if (status.info === "error" && status.id === variantId) {
-      toast.error("Failed to add product to cart");
-      dispatch(resetAddProductStatus());
-    }
-  }, [status, dispatch]);
 
   if (type === "icon") {
     return (
@@ -54,7 +59,7 @@ const AddToCartButton = ({ variantId, type }) => {
         <div>
           <ButtonSecondary
             onClick={handleClick}
-            pending={status.info === "pending" && status.id === variantId}
+            pending={isLoading}
             disabled={isInCart}
             filled={isInCart}
           >

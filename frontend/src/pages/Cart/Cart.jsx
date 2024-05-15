@@ -12,12 +12,21 @@ import ButtonPrimary from "../../components/ButtonPrimary";
 import Loader from "../../components/Loader";
 import ButtonSecondary from "../../components/ButtonSecondary";
 import { Link } from "react-router-dom";
+import { useGetCartQuery } from "../../features/api/apiSlice";
 
 const Cart = () => {
-  const status = useSelector(selectCartStatus);
-  const cart = useSelector(selectCart);
-  const quantity = useSelector(selectCartQuantity);
-  const error = useSelector(selectCartError);
+  // const status = useSelector(selectCartStatus);
+  // const cart = useSelector(selectCart);
+  // const quantity = useSelector(selectCartQuantity);
+  // const error = useSelector(selectCartError);
+
+  const {
+    isSuccess,
+    isError,
+    data: cart,
+    isLoading,
+    error,
+  } = useGetCartQuery();
 
   const renderCartItems = () => {
     if (cart.items.length === 0) {
@@ -40,9 +49,9 @@ const Cart = () => {
       <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col justify-between col-span-1">
           <div className=" flex flex-col justify-between w-full">
-            {status === "success" ? (
+            {isSuccess ? (
               renderCartItems()
-            ) : status === "pending" ? (
+            ) : isLoading ? (
               <div className="flex items-center justify-center">
                 <Loader type="lg" />
               </div>
@@ -60,7 +69,7 @@ const Cart = () => {
           </div>
         </div>
         <div className="col-span-1 flex flex-col gap-16 justify-between">
-          <CartSummary quantity={quantity} cart={cart} />
+          {isSuccess && <CartSummary cart={cart} />}
           <Link to="/checkout">
             <ButtonPrimary>PROCEED TO CHECKOUT</ButtonPrimary>
           </Link>

@@ -10,21 +10,17 @@ import becomeAffiliate from "../../assets/images/become-affiliate.png";
 import Subscribe from "../../components/Subscribe";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchProducts,
-  selectProducts,
-  selectProductsStatus,
-} from "../../features/products/productsSlice";
 import Loader from "../../components/Loader";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 
 const Home = () => {
-  const status = useSelector(selectProductsStatus);
-  const products = useSelector(selectProducts);
-  const dispatch = useDispatch();
+  const { data, isLoading, isError, isSuccess, error } = useGetProductsQuery(1);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (isError) {
+      console.error(error);
+    }
+  }, [isError]);
 
   return (
     <main>
@@ -82,9 +78,9 @@ const Home = () => {
           </Link>
         </div>
         <div className="mt-16">
-          {status === "success" ? (
-            <ProductList products={products.slice(0, 3)} />
-          ) : status === "pending" ? (
+          {isSuccess ? (
+            <ProductList products={data.products.slice(0, 3)} />
+          ) : isLoading ? (
             <div className="flex items-center justify-center">
               <Loader type="lg" />
             </div>
@@ -131,9 +127,9 @@ const Home = () => {
           </Link>
         </div>
         <div className="mt-16">
-          {status === "success" ? (
-            <ProductList products={products.slice(4, 10)} />
-          ) : status === "pending" ? (
+          {isSuccess ? (
+            <ProductList products={data.products.slice(0, 6)} />
+          ) : isLoading ? (
             <div className="flex items-center justify-center">
               <Loader type="lg" />
             </div>

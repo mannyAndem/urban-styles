@@ -35,7 +35,7 @@ const Main = () => {
         />
         <Route path="/about" element={<About />} />
         <Route
-          path="/products/:id"
+          path="/products/:handle"
           element={
             <ScrollToTop>
               <ProductDetails />

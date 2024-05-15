@@ -2,63 +2,33 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../../api/axios";
 
 const initialState = {
-  data: null,
   meta: null,
-  status: "idle", //accepts "idle" || "pending" || "success" || "error"
 };
 
-export const fetchProducts = createAsyncThunk(
-  "products/fetch",
-  async (page) => {
-    const LIMIT = 12;
+// IMPLEMENT FUNCTIONALITY TO SET META TO THIS OBJECT WHEN PRODUCTS IS FETCHED
 
-    try {
-      const response = await axios.get("/products", {
-        params: {
-          order: "created_at",
-          offset: LIMIT * (page - 1) || 0,
-          limit: LIMIT,
-        },
-      });
-      return response.data;
-    } catch (err) {
-      console.error(err); //DELETE BEFORE PUSHING TO PROD!!!
-      return Promise.reject(err);
-    }
-  }
-);
+// state.meta = {
+//   count: action.payload.count,
+//   offset: action.payload.offset,
+//   limit: action.payload.limit,
+// };
 
 export const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    resetProductsStatus(state) {
-      state.status = "idle";
-    },
-  },
-  extraReducers(builder) {
-    builder.addCase(fetchProducts.fulfilled, (state, action) => {
-      state.status = "success";
-      state.data = action.payload.products;
+    setMeta(state, action) {
       state.meta = {
         count: action.payload.count,
         offset: action.payload.offset,
         limit: action.payload.limit,
       };
-    });
-    builder.addCase(fetchProducts.pending, (state, action) => {
-      state.status = "pending";
-    });
-    builder.addCase(fetchProducts.rejected, (state, action) => {
-      (state.status = "error"), (state.data = action.payload);
-    });
+    },
   },
 });
 
-export const { resetProductsStatus } = productsSlice.actions;
+export const { setMeta } = productsSlice.actions;
 
-export const selectProductsStatus = (state) => state.products.status;
-export const selectProducts = (state) => state.products.data;
 export const selectMeta = (state) => state.products.meta;
 
 export default productsSlice.reducer;

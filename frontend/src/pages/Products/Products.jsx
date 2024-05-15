@@ -2,41 +2,42 @@ import ProductList from "../../features/products/ProductList";
 import arrow from "../../assets/icons/arrow-down-icon.png";
 import arrowWhite from "../../assets/icons/arrow-right-white.png";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchProducts,
-  resetProductsStatus,
-  selectMeta,
-  selectProducts,
-  selectProductsStatus,
-} from "../../features/products/productsSlice";
-import { useEffect } from "react";
+import { selectMeta, setMeta } from "../../features/products/productsSlice";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ScrollToTop from "../../components/ScrollToTop";
 import Loader from "../../components/Loader";
+import { useGetProductsQuery } from "../../features/api/apiSlice";
 
+// TODO: FIX PRODUCTS FETCHING IN HOME PAGE 
 const Products = () => {
-  const status = useSelector(selectProductsStatus);
-  const products = useSelector(selectProducts);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+  const { isLoading, data, isError, error, isSuccess } =
+    useGetProductsQuery(page);
+  const [pages, setPages] = useState(0);
   const meta = useSelector(selectMeta);
   const dispatch = useDispatch();
 
-  // pagination
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const numberOfPages = Math.ceil(meta?.count / meta?.limit);
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (meta) {
+      setPages(Math.ceil(meta.count / meta.limit));
+    }
+  }, [meta]);
+
   const navigateToPage = (page) => {
-    dispatch(resetProductsStatus());
     navigate(`?page=${page}`);
   };
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchProducts(page));
+    if (isSuccess) {
+      dispatch(setMeta(data));
     }
-  }, [status, dispatch]);
-
-  console.log(products);
+    if (isError) {
+      console.error(error);
+    }
+  }, [isSuccess, isError]);
   return (
     <ScrollToTop>
       <div className="text-dark">
@@ -51,9 +52,9 @@ const Products = () => {
           </div>
 
           <div className="my-24">
-            {status === "success" ? (
-              <ProductList products={products} />
-            ) : status === "pending" ? (
+            {isSuccess ? (
+              <ProductList products={data.products} />
+            ) : isLoading ? (
               <div className="flex items-center justify-center">
                 <Loader type="lg" />
               </div>
@@ -73,20 +74,20 @@ const Products = () => {
               <span>Previous</span>
             </button>
             <div className="font-medium flex items-center gap-3 lg:gap-6">
-              {status === "success" ? (
+              {isSuccess ? (
                 <>
                   <span className="px-4 py-2 border border-gray">{page}</span>
                   <span>of</span>
-                  <span>{numberOfPages}</span>
+                  <span>{pages}</span>
                 </>
-              ) : status === "pending" ? (
+              ) : isLoading ? (
                 <span className="block text-center">Loading...</span>
               ) : (
                 <></>
               )}
             </div>
             <button
-              disabled={page == numberOfPages}
+              disabled={page == pages}
               onClick={() => navigateToPage(page + 1)}
               className="font-medium flex items-center gap-2 px-3 py-4 border bg-dark text-lightPink border-dark rounded-sm"
             >
