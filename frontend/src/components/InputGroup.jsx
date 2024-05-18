@@ -1,5 +1,7 @@
 import { createContext, useContext } from "react";
 import Input from "./Input";
+import { useField } from "formik";
+import Select from "./Select";
 
 const InputGroupContext = createContext(null);
 
@@ -8,7 +10,7 @@ const useInputGroupContext = () => useContext(InputGroupContext);
 const InputGroup = ({ children, name, error, id }) => {
   return (
     <InputGroupContext.Provider value={{ name, error, id }}>
-      <div className="text-dark flex flex-col gap-4">
+      <div className="text-dark flex flex-col gap-4 w-full">
         {children}
         {error && (
           <span className="text-sm font-medium text-red-400">{error}</span>
@@ -28,7 +30,14 @@ InputGroup.Label = ({ children }) => {
   );
 };
 
-InputGroup.Input = ({ type, placeholder, value, onChange }) => {
+InputGroup.Input = ({
+  type,
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  ...rest
+}) => {
   const { name, id, error } = useInputGroupContext();
 
   return (
@@ -40,7 +49,33 @@ InputGroup.Input = ({ type, placeholder, value, onChange }) => {
       value={value}
       onChange={onChange}
       invalid={!!error}
+      onBlur={onBlur}
+      {...rest}
     />
+  );
+};
+
+InputGroup.Select = ({
+  children,
+  value,
+  onChange,
+  placeholder,
+  onBlur,
+  ...rest
+}) => {
+  const { name, id, error } = useInputGroupContext();
+
+  return (
+    <Select
+      value={value}
+      onChange={onChange}
+      name={name}
+      placeholder={placeholder}
+      onBlur={onBlur}
+      {...rest}
+    >
+      {children}
+    </Select>
   );
 };
 

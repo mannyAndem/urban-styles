@@ -1,24 +1,28 @@
-import { useDispatch, useSelector } from "react-redux";
 import CartProductCard from "../../features/cart/CartProductCard";
-import {
-  selectCart,
-  selectCartError,
-  selectCartQuantity,
-  selectCartStatus,
-} from "../../features/cart/cartSlice";
 import CartSummary from "./components/CartSummary";
 import Input from "../../components/Input";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Loader from "../../components/Loader";
 import ButtonSecondary from "../../components/ButtonSecondary";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetCartQuery } from "../../features/api/apiSlice";
+import LoginModal from "./components/LoginModal";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCustomer } from "../../features/customer/customerSlice";
 
 const Cart = () => {
-  // const status = useSelector(selectCartStatus);
-  // const cart = useSelector(selectCart);
-  // const quantity = useSelector(selectCartQuantity);
-  // const error = useSelector(selectCartError);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState();
+  const currentUser = useSelector(selectCustomer);
+  const navigate = useNavigate();
+
+  const handleCheckoutClick = () => {
+    if (currentUser) {
+      navigate("/checkout");
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
 
   const {
     isSuccess,
@@ -43,8 +47,13 @@ const Cart = () => {
       <CartProductCard key={product.id} product={product} />
     ));
   };
+
   return (
     <div className="py-24 px-5 lg:px-16">
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        close={() => setIsLoginModalOpen(false)}
+      />
       <h1 className="text-4xl font-medium lg:text-midXl">Cart</h1>
       <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="flex flex-col justify-between col-span-1">
@@ -61,18 +70,18 @@ const Cart = () => {
               </span>
             )}
           </div>
-          <div className="mt-8 flex gap-8">
+          {/* <div className="mt-8 flex gap-8">
             <Input color="#5F5F5F" placeholder="Enter coupon code" />
             <div>
               <ButtonSecondary>Apply Coupon</ButtonSecondary>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="col-span-1 flex flex-col gap-16 justify-between">
           {isSuccess && <CartSummary cart={cart} />}
-          <Link to="/checkout">
-            <ButtonPrimary>PROCEED TO CHECKOUT</ButtonPrimary>
-          </Link>
+          <ButtonPrimary onClick={handleCheckoutClick}>
+            PROCEED TO CHECKOUT
+          </ButtonPrimary>
         </div>
       </div>
     </div>

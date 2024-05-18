@@ -1,3 +1,5 @@
+import { Field } from "formik";
+
 const Input = ({
   name,
   value,
@@ -7,9 +9,11 @@ const Input = ({
   placeholder,
   invalid,
   id,
+  onBlur,
+  ...rest
 }) => {
   return (
-    <input
+    <Field
       id={id}
       autoComplete="off"
       type={type ? type : "text"}
@@ -23,6 +27,8 @@ const Input = ({
           ? `placeholder-[${color}] text-[${color}] border-[${color}]`
           : "text-dark border-lightGray placeholder-gray"
       } focus:outline-dark aria-[invalid=true]:border-red-400 aria-[invalid=true]:outline-red-400 aria-[invalid=true]:bg-red-100 aria-[invalid]:bg-opacity-40 lg:text-xl lg:p-4`}
+      onBlur={onBlur}
+      {...rest}
     />
   );
 };

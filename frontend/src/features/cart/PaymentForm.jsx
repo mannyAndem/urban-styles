@@ -1,100 +1,117 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  completeCart,
-  createPaymentSessions,
-  selectCart,
-  selectCompleteCartStatus,
-  selectCreatePaymentSessionsStatus,
-} from "./cartSlice";
 import { useEffect } from "react";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import usePaystack from "../../hooks/usePaystack";
-import { selectCustomer } from "../customer/customerSlice";
 import Loader from "../../components/Loader";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  useCompleteCartMutation,
+  useCreatePaymentSessionsMutation,
+} from "../api/apiSlice";
+import { formatPrice } from "../../utils/formatPrice";
 
 const PaymentForm = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const status = useSelector(selectCreatePaymentSessionsStatus);
-  const completeCartStatus = useSelector(selectCompleteCartStatus);
-  const customer = useSelector(selectCustomer);
-  const cart = useSelector(selectCart);
-  console.log(cart);
 
-  const { status: paymentStatus, initiatePaystackPopup } = usePaystack();
+  const [createPaymentSessions, { isSuccess, isLoading, isError, data: cart }] =
+    useCreatePaymentSessionsMutation();
+
+  const [
+    completeCart,
+    {
+      isSuccess: isCompleteSuccess,
+      isError: isCompleteError,
+      isLoading: isCompleteLoading,
+      data: completedCart,
+      error: completeError,
+    },
+  ] = useCompleteCartMutation();
+
+  const {
+    isSuccess: isPaymentSuccess,
+    isLoading: isPaymentLoading,
+    isError: isPaymentError,
+    initiatePaystackPopup,
+  } = usePaystack();
 
   const handleClick = () => {
     initiatePaystackPopup(
-      customer.email,
+      cart.email,
       cart.total,
-      cart.payment_session.data.paystackTxRef
+      cart.payment_session.data.paystackTxRef,
+      cart.region.currency_code.toUpperCase()
     );
   };
 
   useEffect(() => {
-    if (paymentStatus === "success") {
-      dispatch(completeCart());
-    }
-    if (paymentStatus === "error") {
-      toast.error("Could not process payment, please retry.");
-    }
-  }, [paymentStatus]);
-
-  useEffect(() => {
-    dispatch(createPaymentSessions());
+    createPaymentSessions();
   }, []);
 
   useEffect(() => {
-    if (completeCartStatus === "success") {
-      navigate("/complete");
+    if (isPaymentSuccess) {
+      console.log("Paid!!");
+      toast.success("PAID!!!!!");
+      completeCart();
     }
-    if (completeCartStatus === "error") {
-      toast.error("Could not place order");
+    if (isPaymentError) {
+      toast.error("Could not process payment, please retry.");
     }
-  }, [completeCartStatus]);
+  }, [isPaymentSuccess, isPaymentError]);
+
+  useEffect(() => {
+    if (isCompleteSuccess) {
+      setTimeout(() => {
+        navigate("/complete");
+      }, 1000);
+    }
+    if (isCompleteError) {
+      console.error(completeError);
+      toast.error("Something went wrong");
+    }
+  }, [isCompleteError, isCompleteSuccess]);
 
   return (
     <div>
       <Toaster />
       <h2 className="text-midXl">Payment Summary</h2>
-      {status !== "pending" ? (
+      {isSuccess ? (
         <ul className="mt-8 flex flex-col gap-8">
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Subtotal</span>
             <span className="font-medium text-xl">
-              N{(cart?.subtotal / 100).toLocaleString() ?? 0}
+              {formatPrice(cart.subtotal)}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Shipping Fees</span>
             <span className="font-medium text-xl">
-              N{(cart?.shipping_total / 100).toLocaleString()}
+              {formatPrice(cart.shipping_total)}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Taxes</span>
             <span className="font-medium text-xl">
-              N{(cart?.tax_total / 100).toLocaleString()}
+              {formatPrice(cart.tax_total)}
             </span>
           </li>
           <li className="flex items-center justify-between">
             <span className="text-xl text-gray">Total</span>
             <span className="font-medium text-xl">
-              N{(cart?.total / 100).toLocaleString() ?? 0}
+              {formatPrice(cart.total)}
             </span>
           </li>
         </ul>
-      ) : status === "pending" ? (
-        <Loader type="lg" />
+      ) : isLoading ? (
+        <div className="py-5">
+          <Loader type="lg" />
+        </div>
       ) : (
         <div></div>
       )}
       <div className="mt-16">
         <ButtonPrimary
-          disabled={status === "pending"}
-          pending={paymentStatus === "pending"}
+          disabled={isLoading}
+          pending={isPaymentLoading}
           onClick={handleClick}
         >
           Place order

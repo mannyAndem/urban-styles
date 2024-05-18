@@ -2,6 +2,7 @@ import heartIcon from "../../assets/icons/heart-icon.svg";
 import { Link } from "react-router-dom";
 import AddToCartButton from "../cart/AddToCartButton";
 import { formatPrice } from "../../utils/formatPrice";
+import rightArrowImg from "../../assets/icons/arrow-right-white.svg";
 
 const ProductCard = ({ product }) => {
   return (
@@ -11,8 +12,14 @@ const ProductCard = ({ product }) => {
       </button>
       <Link
         to={`/products/${product.handle}`}
-        className="w-full rounded-sm overflow-hidden"
+        className="w-full rounded-sm overflow-hidden relative group"
       >
+        <div className="opacity-0 flex items-center justify-center absolute h-full w-full bg-dark bg-opacity-40 backdrop-blur-sm group-hover:opacity-100 transition-all duration-300 ease-out">
+          <span className="text-medium text-lightPink text-xl text-center flex items-center gap-2 group-hover:gap-4 transition-all duration-300 delay-200 ease-out">
+            View details
+            <img src={rightArrowImg} className="w-5 h-5" />
+          </span>
+        </div>
         <img src={product.thumbnail} className="w-full object-cover" />
       </Link>
       <div className="flex items-center justify-between ">

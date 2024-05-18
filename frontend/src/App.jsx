@@ -9,6 +9,7 @@ import { selectRegion, setCustomer } from "./features/customer/customerSlice";
 import Loader from "./components/Loader";
 import { useGetCustomerQuery } from "./features/api/apiSlice";
 import SelectRegion from "./features/customer/SelectRegion";
+import Guest from "./pages/Guest/Guest";
 
 function App() {
   const { data, isSuccess, isError, isLoading, error } = useGetCustomerQuery();
@@ -34,6 +35,7 @@ function App() {
           <Route path="/*" element={<Main />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/guest" element={<Guest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       ) : isLoading ? (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import InputGroup from "../../components/InputGroup";
-import axios from "axios";
+
 import Select from "../../components/Select";
 import Option from "../../components/Option";
 import Loader from "../../components/Loader";
@@ -9,195 +9,170 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCustomer } from "../customer/customerSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { toast, Toaster } from "react-hot-toast";
-import {
-  addShippingAddress,
-  selectAddShippingAddressError,
-  selectAddShippingAddressStatus,
-} from "./cartSlice";
+import * as yup from "yup";
+import { Formik } from "formik";
+import { countries } from "../../utils/countries";
+import { useUpdateCartMutation } from "../api/apiSlice";
 
 const AddShippingAddressForm = ({ nextStep }) => {
-  const [countries, setCountries] = useState(null);
-  const [countriesStatus, setCountriesStatus] = useState("pending");
+  const [updateCart, { isSuccess, isLoading, isError, error, data }] =
+    useUpdateCartMutation();
   const currentUser = useSelector(selectCustomer);
-  const status = useSelector(selectAddShippingAddressStatus);
-  const error = useSelector(selectAddShippingAddressError);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get(
-          "https://restcountries.com/v3.1/independent",
-          {
-            signal,
-            params: {
-              fields: "name,cca2",
-            },
-          }
-        );
-        const countries = response.data.toSorted((a, b) =>
-          a.name.common > b.name.common ? 1 : -1
-        );
-        //   mapping the countries data to the form the Select element expects
-        console.log(response.data);
-        setCountries(countries);
-        setCountriesStatus("success");
-      } catch (err) {
-        setCountriesStatus("error");
-
-        if (err.code === "ERR_NETWORK") {
-          setError("Can't connect to the internet");
-        } else {
-          setError("Something went wrong.");
-        }
-      }
-    };
-
-    fetchCountries();
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  const [formData, setFormData] = useState({
-    first_name: currentUser.first_name,
-    last_name: currentUser.last_name,
+  const initialValues = {
+    first_name: currentUser?.first_name ?? "",
+    last_name: currentUser?.last_name ?? "",
     address_1: "",
+    address_2: "",
     city: "",
     country_code: "",
     postal_code: "",
+  };
+
+  const formSchema = yup.object().shape({
+    first_name: yup.string().required("First name is required"),
+    last_name: yup.string().required("Last name is required"),
+    address_1: yup.string().required("Address is required"),
+    address_2: yup.string().notRequired(),
+    city: yup.string().required("City is required"),
+    country_code: yup.string().required(""),
+    postal_code: yup.string().required("Postal code is required"),
   });
 
-  const [formErrors, setFormErrors] = useState({});
-
-  //   function to handle input change
-  const handleFormDataChange = (e) => {
-    console.log("handleFormDataChange ran");
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const validateForm = () => {
-    setFormErrors({});
-
-    const validAddress = validateString(formData.address_1);
-    const validCity = validateString(formData.city);
-    const validCountryCode = validateString(formData.country_code);
-    const validPostalCode = validateString(formData.postal_code);
-
-    if (!validAddress) {
-      setFormErrors((prev) => ({ ...prev, address_1: "Address is required" }));
-    }
-    if (!validCity) {
-      setFormErrors((prev) => ({ ...prev, city: "City is required" }));
-    }
-    if (!validCountryCode) {
-      setFormErrors((prev) => ({
-        ...prev,
-        country_code: "Country code is required",
-      }));
-    }
-    if (!validPostalCode) {
-      setFormErrors((prev) => ({
-        ...prev,
-        postal_code: "Postal Code is required",
-      }));
-    }
-
-    return validAddress && validCity && validCountryCode && validPostalCode;
-  };
-
-  const resetFormData = () => {
-    setFormData((prev) => ({
-      ...prev,
-      address_1: "",
-      city: "",
-      country_code: "",
-      postal_code: "",
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    console.log(formData);
-    dispatch(addShippingAddress(formData));
+  const handleSubmit = (values) => {
+    console.log(values);
+    updateCart({ shipping_address: { ...values } });
   };
 
   useEffect(() => {
-    if (status === "success") {
-      toast.success("Address added successfully");
-      resetFormData();
+    if (isSuccess) {
       nextStep();
     }
-    if (status === "error") {
-      toast.error(error);
+    if (isError) {
+      toast.error("Something went wrong");
+      console.error(error);
     }
-  }, [status]);
+  }, [isSuccess, isError]);
 
   return (
-    <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+    <>
       <Toaster />
-      <InputGroup>
-        <InputGroup.Label htmlFor="email">Address</InputGroup.Label>
-        <InputGroup.Input
-          name="address_1"
-          placeholder="Enter address"
-          value={formData.address_1}
-          onChange={handleFormDataChange}
-        />
-        <InputGroup.Error error={formErrors.address_1} />
-      </InputGroup>
-      <InputGroup>
-        <InputGroup.Label htmlFor="email">City</InputGroup.Label>
-        <InputGroup.Input
-          name="city"
-          placeholder="Enter your city"
-          value={formData.city}
-          onChange={handleFormDataChange}
-        />
-        <InputGroup.Error error={formErrors.city} />
-      </InputGroup>
-      <InputGroup>
-        <InputGroup.Label htmlFor="email">Country Code</InputGroup.Label>
-        <Select
-          name="country_code"
-          value={formData.country_code}
-          onChange={handleFormDataChange}
-        >
-          {countriesStatus === "success" ? (
-            countries.map((country, index) => (
-              <Option
-                key={index}
-                title={country.name.common}
-                value={country.cca2.toLowerCase()}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={formSchema}
+        onSubmit={handleSubmit}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleSubmit,
+          dirty,
+          isValid,
+          handleChange,
+          handleBlur,
+        }) => (
+          <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+            <div className="flex gap-4">
+              <InputGroup
+                name="first_name"
+                error={touched.first_name && errors.first_name}
+              >
+                <InputGroup.Label>First Name</InputGroup.Label>
+                <InputGroup.Input
+                  placeholder="First name"
+                  value={values.first_name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </InputGroup>
+              <InputGroup
+                name="last_name"
+                error={touched.last_name && errors.last_name}
+              >
+                <InputGroup.Label>Last Name</InputGroup.Label>
+                <InputGroup.Input
+                  placeholder="Last name"
+                  value={values.last_name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </InputGroup>
+            </div>
+
+            <InputGroup
+              name="country_code"
+              error={touched.country_code && errors.country_code}
+            >
+              <InputGroup.Label>Country</InputGroup.Label>
+              <InputGroup.Select
+                value={values.country_code}
+                onChange={handleChange}
+                placeholder="Select Country"
+                onBlur={handleBlur}
+              >
+                <Option value="" title="Choose a country" />
+                {countries.map((country) => (
+                  <Option
+                    key={country.code}
+                    value={country.code.toLocaleLowerCase()}
+                    title={country.name}
+                  />
+                ))}
+              </InputGroup.Select>
+            </InputGroup>
+            <InputGroup name="city" error={touched.city && errors.city}>
+              <InputGroup.Label>City</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="City"
+                value={values.city}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
-            ))
-          ) : countriesStatus === "pending" ? (
-            <Loader />
-          ) : (
-            <div></div>
-          )}
-        </Select>
-        <InputGroup.Error error={formErrors.country_code} />
-      </InputGroup>
-      <InputGroup>
-        <InputGroup.Label htmlFor="email">Postal Code</InputGroup.Label>
-        <InputGroup.Input
-          name="postal_code"
-          placeholder="Enter postal code"
-          value={formData.postal_code}
-          onChange={handleFormDataChange}
-        />
-        <InputGroup.Error error={formErrors.postal_code} />
-      </InputGroup>
-      <ButtonPrimary pending={status === "pending"}>PROCEED</ButtonPrimary>
-    </form>
+            </InputGroup>
+            <InputGroup
+              name="address_1"
+              error={touched.address_1 && errors.address_1}
+            >
+              <InputGroup.Label>Address 1</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="Street Name, House No., etc"
+                value={values.address_1}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            </InputGroup>
+            <InputGroup
+              name="address_2"
+              error={touched.address_2 && errors.address_2}
+            >
+              <InputGroup.Label>Address 2 (Optional)</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="Apartment No., Room No., etc"
+                value={values.address_2}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            </InputGroup>
+            <InputGroup
+              name="postal_code"
+              error={touched.postal_code && errors.postal_code}
+            >
+              <InputGroup.Label>Postal Code</InputGroup.Label>
+              <InputGroup.Input
+                placeholder="Postal code"
+                value={values.postal_code}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            </InputGroup>
+
+            <ButtonPrimary disabled={!isValid || !dirty} pending={isLoading}>
+              PROCEED
+            </ButtonPrimary>
+          </form>
+        )}
+      </Formik>
+    </>
   );
 };
 

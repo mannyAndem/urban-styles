@@ -1,4 +1,4 @@
-import axios from "../../api/axios";
+import { formatPrice } from "../../utils/formatPrice";
 import DecreaseQuantityButton from "./DecreaseQuantityButton";
 import DeleteButton from "./DeleteButton";
 import IncreaseQuantityButton from "./IncreaseQuantityButton";
@@ -20,7 +20,7 @@ const CartProductCard = ({ product }) => {
         <div className="flex flex-col gap-8 justify-center">
           <span className="text-2xl text-gray">{product.title}</span>
           <span className="text-2xl font-medium">
-            N{(product.subtotal / 100).toLocaleString()}
+            {formatPrice(product.total)}
           </span>
         </div>
         <div className="flex flex-col gap-4 items-center justify-center">

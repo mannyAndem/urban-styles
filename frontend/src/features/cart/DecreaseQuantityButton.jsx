@@ -1,24 +1,31 @@
-import { useDispatch } from "react-redux";
-import { updateItem } from "./cartSlice";
 import minusIcon from "../../assets/icons/minus-icon.svg";
+import Loader from "../../components/Loader";
+import { useUpdateLineItemMutation } from "../api/apiSlice";
 
 const DecreaseQuantityButton = ({ lineItemId, quantity }) => {
-  const dispatch = useDispatch();
+  const [update, { isSuccess, isError, isLoading }] =
+    useUpdateLineItemMutation();
+
   const handleClick = () => {
     const data = {
       id: lineItemId,
       quantity: quantity - 1,
     };
-    dispatch(updateItem(data));
+
+    update(data);
   };
 
   return (
     <button
-      disabled={quantity === 1}
+      disabled={quantity === 1 || isLoading}
       onClick={handleClick}
-      className="p-3 border border-dark rounded-sm"
+      className="p-3 border border-dark rounded-sm disabled:cursor-not-allowed"
     >
-      <img src={minusIcon} className="w-4" />
+      {isLoading ? (
+        <Loader type="xs" />
+      ) : (
+        <img src={minusIcon} className="w-4" />
+      )}
     </button>
   );
 };

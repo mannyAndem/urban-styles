@@ -127,21 +127,21 @@ const ProductDetails = () => {
                 <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
                   <img
                     src={product.thumbnail}
-                    className="cursor-pointer w-full h-full object-cover"
+                    className="cursor-zoom-in w-full h-full object-cover"
                     onClick={toggleImageGallery}
                   />
                 </div>
                 <div className="col-span-2 row-span-2 rounded-sm overflow-hidden shadow-sm">
                   <img
                     src={product.images[0]?.url ?? product.thumbnail}
-                    className="cursor-pointer w-full h-full object-cover"
+                    className="cursor-zoom-in  w-full h-full object-cover"
                     onClick={toggleImageGallery}
                   />
                 </div>
                 <div className="col-span-1 row-span-1 rounded-sm overflow-hidden shadow-sm">
                   <img
                     src={product.images[1]?.url ?? product.thumbnail}
-                    className="cursor-pointer w-full h-full object-cover"
+                    className="cursor-zoom-in w-full h-full object-cover"
                     onClick={toggleImageGallery}
                   />
                 </div>

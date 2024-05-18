@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { updateAddedVariants } from "../cart/cartSlice";
 
 export const api = createApi({
   reducerPath: "api",
@@ -38,7 +37,6 @@ export const api = createApi({
     getCart: builder.query({
       queryFn: async (_, __, ___, baseQuery) => {
         const cart_id = localStorage.getItem("cart_id");
-        console.log(cart_id);
 
         try {
           if (cart_id) {
@@ -67,6 +65,14 @@ export const api = createApi({
       },
       providesTags: ["cart"],
     }),
+    updateCart: builder.mutation({
+      query: (data) => ({
+        url: `carts/${localStorage.getItem("cart_id")}`,
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+      invalidatesTags: ["cart"],
+    }),
     addLineItem: builder.mutation({
       query: (variant_id) => ({
         url: `carts/${localStorage.getItem("cart_id")}/line-items`,
@@ -79,7 +85,47 @@ export const api = createApi({
 
       invalidatesTags: ["cart"],
     }),
-
+    updateLineItem: builder.mutation({
+      query: ({ id, quantity }) => ({
+        url: `carts/${localStorage.getItem("cart_id")}/line-items/${id}`,
+        method: "POST",
+        body: JSON.stringify({ quantity }),
+      }),
+      invalidatesTags: ["cart"],
+    }),
+    deleteLineItem: builder.mutation({
+      query: (id) => ({
+        url: `carts/${localStorage.getItem("cart_id")}/line-items/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["cart"],
+    }),
+    getShippingOptions: builder.query({
+      query: () => `shipping-options/${localStorage.getItem("cart_id")}`,
+      transformResponse: (res) => res.shipping_options,
+    }),
+    addShippingMethod: builder.mutation({
+      query: (option_id) => ({
+        url: `carts/${localStorage.getItem("cart_id")}/shipping-methods`,
+        method: "POST",
+        body: JSON.stringify({ option_id }),
+      }),
+    }),
+    createPaymentSessions: builder.mutation({
+      query: () => ({
+        url: `carts/${localStorage.getItem("cart_id")}/payment-sessions`,
+        method: "POST",
+        // TODO: CREATE PAYMENT SESSIONS
+      }),
+      transformResponse: (res) => res.cart,
+      invalidatesTags: ["cart"],
+    }),
+    completeCart: builder.mutation({
+      query: () => ({
+        url: `carts/${localStorage.getItem("cart_id")}/complete`,
+        method: "POST",
+      }),
+    }),
     // -- products related enpoints --
 
     getProducts: builder.query({
@@ -117,6 +163,12 @@ export const {
   useGetProductQuery,
   useCreateCartMutation,
   useGetCartQuery,
-  useLazyGetCartQuery,
   useAddLineItemMutation,
+  useUpdateLineItemMutation,
+  useDeleteLineItemMutation,
+  useUpdateCartMutation,
+  useGetShippingOptionsQuery,
+  useAddShippingMethodMutation,
+  useCreatePaymentSessionsMutation,
+  useCompleteCartMutation,
 } = api;

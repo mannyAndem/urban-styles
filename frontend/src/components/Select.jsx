@@ -1,59 +1,40 @@
 import arrowDown from "../assets/icons/arrow-down-icon.png";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-const SelectContext = createContext();
-
-const Select = ({ children, value, onChange, name }) => {
-  const [selectValue, setSelectValue] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
-
-  const handleChange = (value) => {
-    setSelectValue(value);
-  };
-
-  const handleSearchValueChange = (e) => {
-    setSelectValue(null);
-    setSearchValue(e.target.value);
-  };
-
-  const inputRef = useRef();
-
-  //   useEffect to attach event listener passed as props on mount
-  useEffect(() => {
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    inputRef.current.addEventListener("change", (e) => onChange(e), { signal });
-
-    return () => {
-      abortController.abort();
-    };
-  }, []);
-
-  //   useEffect to synthetically fire change event when selectValue state changes
-  useEffect(() => {
-    const e = new Event("change");
-    inputRef.current.dispatchEvent(e);
-  }, [selectValue]);
-
+const Select = ({
+  children,
+  name,
+  value,
+  onChange,
+  color,
+  type,
+  invalid,
+  id,
+  onBlur,
+  ...rest
+}) => {
   return (
-    <SelectContext.Provider value={{ handleChange, searchValue }}>
-      <div className="relative w-full">
-        <input
-          className="cursor-pointer bg-[image:var(--image-url)] bg-no-repeat bg-[right_12px_center] peer w-full p-2 rounded-md bg-transparent border text-gray border-lightGray"
-          name={name}
-          value={selectValue ?? searchValue}
-          onChange={handleSearchValueChange}
-          ref={inputRef}
-          style={{ "--image-url": `url(${arrowDown})` }}
-        />
-        <div className="z-20 peer-focus:scale-y-100 hover:scale-y-100 scale-y-0  origin-top max-h-[300px] transition-all duration-300 ease-out overflow-y-scroll top-[100%] left-0 right-0 absolute backdrop-blur-md bg-opacity-60 bg-lightPink p-4 rounded-md shadow-sm flex flex-col">
-          {children}
-        </div>
-      </div>
-    </SelectContext.Provider>
+    <select
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      aria-invalid={invalid}
+      style={{
+        backgroundImage: `url(${arrowDown})`,
+        backgroundPosition: "right 12px center",
+        backgroundSize: "20px",
+      }}
+      className={`w-full p-3 rounded-md placeholder-opacity-70 appearance-none bg-transparent border ${
+        color
+          ? `placeholder-[${color}] text-[${color}] border-[${color}]`
+          : "text-dark border-lightGray placeholder-gray"
+      } focus:outline-dark aria-[invalid=true]:border-red-400 aria-[invalid=true]:outline-red-400 aria-[invalid=true]:bg-red-100 aria-[invalid]:bg-opacity-40 lg:text-xl lg:p-4 bg-no-repeat`}
+      onBlur={onBlur}
+      {...rest}
+    >
+      {children}
+    </select>
   );
 };
 
 export default Select;
-
-export const useSelectContext = () => useContext(SelectContext);

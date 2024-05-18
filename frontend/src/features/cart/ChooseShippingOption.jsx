@@ -1,82 +1,57 @@
-import { useEffect, useState } from "react";
-import axios from "../../api/axios";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addShippingMethod,
-  selectAddShippingMethodError,
-  selectAddShippingMethodStatus,
-  selectCart,
-} from "./cartSlice";
 import Loader from "../../components/Loader";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import toast, { Toaster } from "react-hot-toast";
+import {
+  useAddShippingMethodMutation,
+  useGetShippingOptionsQuery,
+} from "../api/apiSlice";
+import { formatPrice } from "../../utils/formatPrice";
+import { useEffect, useState } from "react";
 
 const ChooseShippingOption = ({ nextStep }) => {
-  const [options, setOptions] = useState();
-  const [status, setStatus] = useState("loading");
-  const [error, setError] = useState(null);
+  const {
+    data: options,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetShippingOptionsQuery();
 
-  const submitStatus = useSelector(selectAddShippingMethodStatus);
-  const submitError = useSelector(selectAddShippingMethodError);
-  const cart = useSelector(selectCart);
-  const dispatch = useDispatch();
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [
+    addShippingMethod,
+    {
+      isSuccess: isAddSuccess,
+      isError: isAddError,
+      isLoading: isAddLoading,
+      error: addError,
+    },
+  ] = useAddShippingMethodMutation();
+
+  const [optionId, setOptionId] = useState("");
 
   const handleChange = (e) => {
-    setSelectedOption(e.target.value);
+    setOptionId(e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!selectedOption) {
-      toast.error("Please select a shipping option");
-      return;
-    }
-
-    dispatch(addShippingMethod(selectedOption));
+    addShippingMethod(optionId);
   };
 
   useEffect(() => {
-    if (submitStatus === "success") {
+    if (isAddSuccess) {
       nextStep();
-      return;
     }
-
-    if (submitStatus === "error") {
-      toast.error(submitError);
+    if (isAddError) {
+      console.error(addError);
     }
-  }, [submitStatus]);
-
-  useEffect(() => {
-    const getOptions = async () => {
-      try {
-        if (cart) {
-          const response = await axios.get(`/shipping-options/${cart.id}`);
-          console.log(response);
-          setOptions(response.data.shipping_options);
-          setStatus("success");
-          console.log(response);
-        }
-      } catch (err) {
-        console.error(err);
-        setStatus("error");
-        if (err.code === "ERR_NETWORK") {
-          setError("Can't connect to the internet");
-        } else {
-          setError("Something went wrong");
-        }
-      }
-    };
-
-    getOptions();
-  }, []);
+  }, [isAddSuccess, isAddError]);
   return (
     <div>
       <Toaster />
       <h2 className="text-midXl">Choose Shipping Option</h2>
       <form className="mt-16 flex flex-col gap-4" onSubmit={handleSubmit}>
-        {status === "success" ? (
+        {isSuccess ? (
           options.map((option, key) => (
             <div key={key} className="flex items-center gap-4">
               <input
@@ -85,22 +60,23 @@ const ChooseShippingOption = ({ nextStep }) => {
                 id={option.id}
                 value={option.id}
                 name="shipping_option"
+                checked={option.id === optionId}
                 onChange={handleChange}
               />
               <label htmlFor={option.id} className="text-xl font-medium">
-                {option.name} (N{option.amount.toLocaleString()})
+                {option.name} ({formatPrice(option.amount)})
               </label>
             </div>
           ))
-        ) : status === "pending" ? (
+        ) : isLoading ? (
           <Loader type="md" />
-        ) : status === "error" ? (
+        ) : isError ? (
           <span className="block text-center text-red-400">{error}</span>
         ) : (
           <div></div>
         )}
         <div className="mt-16">
-          <ButtonPrimary pending={submitStatus === "pending"}>
+          <ButtonPrimary disabled={!optionId} pending={isAddLoading}>
             Proceed
           </ButtonPrimary>
         </div>

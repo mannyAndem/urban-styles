@@ -1,12 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import plusIcon from "../../assets/icons/plus-icon.svg";
 import plusIconLight from "../../assets/icons/plus-icon-light.svg";
-import {
-  addProductToCart,
-  selectAddProductStatus,
-  selectAddedVariants,
-  updateAddedVariants,
-} from "./cartSlice";
+import { selectAddedVariants, updateAddedVariants } from "./cartSlice";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import { toast, Toaster } from "react-hot-toast";
 import { useEffect, useMemo } from "react";
@@ -35,7 +30,6 @@ const AddToCartButton = ({ variantId, type }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
       dispatch(updateAddedVariants(variantId));
       toast.success("Product added to cart");
     }
@@ -74,10 +68,7 @@ const AddToCartButton = ({ variantId, type }) => {
     <>
       <Toaster />
       {!isInCart ? (
-        <ButtonPrimary
-          onClick={handleClick}
-          pending={status.info === "pending" && status.id === variantId}
-        >
+        <ButtonPrimary onClick={handleClick} pending={isLoading}>
           ADD TO CART
         </ButtonPrimary>
       ) : (

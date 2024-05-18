@@ -10,7 +10,9 @@ const CartSummary = ({ cart }) => {
       <ul className="mt-8 flex flex-col gap-8">
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Cart Items</span>
-          <span className="font-medium text-xl">{cart.items.length}</span>
+          <span className="font-medium text-xl">
+            {cart.items.reduce((acc, curr) => acc + curr.quantity, 0)}
+          </span>
         </li>
         <li className="flex items-center justify-between">
           <span className="text-xl text-gray">Subtotal</span>
