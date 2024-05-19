@@ -95,5 +95,5 @@ const projectConfig = {
 module.exports = {
   projectConfig,
   plugins,
-  modules,
+  // modules,
 };
