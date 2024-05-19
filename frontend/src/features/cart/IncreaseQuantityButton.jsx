@@ -17,7 +17,7 @@ const IncreaseQuantityButton = ({ lineItemId, quantity }) => {
   return (
     <button
       onClick={handleClick}
-      className="p-3 border border-dark rounded-sm disabled:cursor-not-allowed"
+      className="p-2 border border-dark rounded-sm disabled:cursor-not-allowed lg:p-3"
       disabled={isLoading}
     >
       {isLoading ? (

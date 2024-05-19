@@ -1,28 +1,22 @@
 import CartProductCard from "../../features/cart/CartProductCard";
 import CartSummary from "./components/CartSummary";
-import Input from "../../components/Input";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import Loader from "../../components/Loader";
-import ButtonSecondary from "../../components/ButtonSecondary";
-import { Link, useNavigate } from "react-router-dom";
-import { useGetCartQuery } from "../../features/api/apiSlice";
+import { useNavigate } from "react-router-dom";
+import {
+  useGetCartQuery,
+  useUpdateCartMutation,
+} from "../../features/api/apiSlice";
 import LoginModal from "./components/LoginModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectCustomer } from "../../features/customer/customerSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const Cart = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState();
   const currentUser = useSelector(selectCustomer);
   const navigate = useNavigate();
-
-  const handleCheckoutClick = () => {
-    if (currentUser) {
-      navigate("/checkout");
-    } else {
-      setIsLoginModalOpen(true);
-    }
-  };
 
   const {
     isSuccess,
@@ -31,6 +25,39 @@ const Cart = () => {
     isLoading,
     error,
   } = useGetCartQuery();
+
+  const [
+    updateCart,
+    {
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      isLoading: isUpdateLoading,
+      error: updateError,
+      data: updatedCart,
+    },
+  ] = useUpdateCartMutation();
+
+  const handleCheckoutClick = () => {
+    if (currentUser) {
+      console.log(currentUser);
+
+      updateCart({ customer_id: currentUser.id });
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    if (isUpdateSuccess) {
+      console.log("success");
+      console.log(updatedCart);
+      navigate("/checkout");
+    }
+    if (isUpdateError) {
+      toast.error("Something went wrong");
+      console.error(error);
+    }
+  }, [isUpdateSuccess, isUpdateError]);
 
   const renderCartItems = () => {
     if (cart.items.length === 0) {
@@ -50,6 +77,7 @@ const Cart = () => {
 
   return (
     <div className="py-24 px-5 lg:px-16">
+      <Toaster />
       <LoginModal
         isOpen={isLoginModalOpen}
         close={() => setIsLoginModalOpen(false)}
@@ -79,7 +107,10 @@ const Cart = () => {
         </div>
         <div className="col-span-1 flex flex-col gap-16 justify-between">
           {isSuccess && <CartSummary cart={cart} />}
-          <ButtonPrimary onClick={handleCheckoutClick}>
+          <ButtonPrimary
+            onClick={handleCheckoutClick}
+            pending={isUpdateLoading}
+          >
             PROCEED TO CHECKOUT
           </ButtonPrimary>
         </div>

@@ -1,9 +1,11 @@
 import signupImg from "../../assets/images/hero-1.png";
 import logo from "../../assets/brand/logo.png";
 import SignupForm from "../../features/customer/SignupForm";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Signup = () => {
+  const { state } = useLocation();
+
   return (
     <div className="flex  text-dark">
       <div className="w-full hidden lg:block">
@@ -23,7 +25,11 @@ const Signup = () => {
         </div>
         <span className="mt-8 text-xl block text-center text-gray">
           Already have an account?{" "}
-          <Link to="/login" className="text-dark font-medium underline">
+          <Link
+            to="/login"
+            state={{ ...state }}
+            className="text-dark font-medium underline"
+          >
             Login
           </Link>
         </span>

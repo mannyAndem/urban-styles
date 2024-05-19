@@ -9,11 +9,12 @@ export const api = createApi({
     },
     credentials: "include",
   }),
-  tagTypes: ["cart"],
+  tagTypes: ["cart", "customer"],
   endpoints: (builder) => ({
     // -- customer related endpoints --
     getCustomer: builder.query({
       query: () => "auth",
+      providesTags: ["customer"],
     }),
     login: builder.mutation({
       query: (data) => ({
@@ -28,6 +29,13 @@ export const api = createApi({
         method: "POST",
         body: JSON.stringify(data),
       }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "auth",
+        method: "DELETE",
+      }),
+      invalidatesTags: ["customer"],
     }),
     getRegions: builder.query({
       query: () => "regions",
@@ -125,6 +133,7 @@ export const api = createApi({
         url: `carts/${localStorage.getItem("cart_id")}/complete`,
         method: "POST",
       }),
+      invalidatesTags: ["cart"],
     }),
     // -- products related enpoints --
 
@@ -133,8 +142,8 @@ export const api = createApi({
         url: "products",
         params: {
           order: "created_at",
-          offset: 6 * (page - 1),
-          limit: 6,
+          offset: 12 * (page - 1),
+          limit: 12,
           region_id: localStorage.getItem("region_id") ?? undefined,
           cart_id: localStorage.getItem("cart_id") ?? undefined,
         },
@@ -171,4 +180,5 @@ export const {
   useAddShippingMethodMutation,
   useCreatePaymentSessionsMutation,
   useCompleteCartMutation,
+  useLogoutMutation,
 } = api;

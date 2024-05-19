@@ -1,12 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../api/apiSlice";
 
 const LogoutButton = () => {
-  // const handleClick = () => {
-  //   dispatch(logout());
-  // };
+  const [logout] = useLogoutMutation();
+
+  const handleClick = () => {
+    logout();
+  };
 
   return (
-    <button className="text-xl text-dark font-medium underline">Logout</button>
+    <button
+      onClick={handleClick}
+      className="text-xl text-dark font-medium underline"
+    >
+      Logout
+    </button>
   );
 };
 

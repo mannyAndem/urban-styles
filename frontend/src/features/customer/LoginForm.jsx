@@ -53,25 +53,39 @@ const LoginForm = () => {
         validationSchema={formSchema}
         onSubmit={handleSubmit}
       >
-        {({ handleChange, values, errors, handleSubmit, dirty, isValid }) => (
+        {({
+          handleChange,
+          values,
+          errors,
+          handleSubmit,
+          dirty,
+          isValid,
+          touched,
+          handleBlur,
+        }) => (
           <form onSubmit={handleSubmit}>
             <Toaster />
             <div className="flex flex-col gap-8">
-              <InputGroup name="email" error={errors.email}>
+              <InputGroup name="email" error={touched.email && errors.email}>
                 <InputGroup.Label>Email</InputGroup.Label>
                 <InputGroup.Input
                   placeholder="Enter your email"
                   value={values.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </InputGroup>
-              <InputGroup name="password" error={errors.password}>
-                <InputGroup.Label>Email</InputGroup.Label>
+              <InputGroup
+                name="password"
+                error={touched.password && errors.password}
+              >
+                <InputGroup.Label>Password</InputGroup.Label>
                 <InputGroup.Input
                   placeholder="Enter your password"
                   value={values.password}
                   onChange={handleChange}
                   type="password"
+                  onBlur={handleBlur}
                 />
               </InputGroup>
             </div>

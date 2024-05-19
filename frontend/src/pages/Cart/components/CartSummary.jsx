@@ -3,7 +3,7 @@ import { formatPrice } from "../../../utils/formatPrice";
 const CartSummary = ({ cart }) => {
   return (
     <div className="text-dark w-full ">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between flex-col lg:flex-row lg:items-center">
         <h2 className="text-2xl font-medium">Order Summary</h2>
         <span className="font-medium">(Shipping fees not included)</span>
       </div>

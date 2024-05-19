@@ -9,7 +9,7 @@ import ScrollToTop from "../../components/ScrollToTop";
 import Loader from "../../components/Loader";
 import { useGetProductsQuery } from "../../features/api/apiSlice";
 
-// TODO: FIX PRODUCTS FETCHING IN HOME PAGE 
+// TODO: FIX PRODUCTS FETCHING IN HOME PAGE
 const Products = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +33,7 @@ const Products = () => {
   useEffect(() => {
     if (isSuccess) {
       dispatch(setMeta(data));
+      console.log(data.products);
     }
     if (isError) {
       console.error(error);

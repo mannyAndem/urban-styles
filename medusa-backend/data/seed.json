@@ -1,9 +1,6 @@
 {
   "store": {
-    "currencies": [
-      "eur",
-      "usd"
-    ]
+    "currencies": ["eur", "usd", "ngn"]
   },
   "users": [
     {
@@ -17,37 +14,27 @@
       "name": "EU",
       "currency_code": "eur",
       "tax_rate": 0,
-      "payment_providers": [
-        "manual"
-      ],
-      "fulfillment_providers": [
-        "manual"
-      ],
-      "countries": [
-        "gb",
-        "de",
-        "dk",
-        "se",
-        "fr",
-        "es",
-        "it"
-      ]
+      "payment_providers": ["manual"],
+      "fulfillment_providers": ["manual"],
+      "countries": ["gb", "de", "dk", "se", "fr", "es", "it"]
     },
     {
-      "id": "test-region-na",
-      "name": "NA",
+      "id": "test-region-ng",
+      "name": "Nigeria",
+      "currency_code": "ngn",
+      "tax_rate": 5,
+      "payment_providers": ["manual", "paystack"],
+      "fulfillment_providers": ["manual"],
+      "countries": ["ng"]
+    },
+    {
+      "id": "test-region-us",
+      "name": "US",
       "currency_code": "usd",
       "tax_rate": 0,
-      "payment_providers": [
-        "manual"
-      ],
-      "fulfillment_providers": [
-        "manual"
-      ],
-      "countries": [
-        "us",
-        "ca"
-      ]
+      "payment_providers": ["manual"],
+      "fulfillment_providers": ["manual", "paystack"],
+      "countries": ["us"]
     }
   ],
   "shipping_options": [
@@ -60,6 +47,26 @@
       },
       "price_type": "flat_rate",
       "amount": 1000
+    },
+    {
+      "name": "PostFake Standard",
+      "region_id": "test-region-ng",
+      "provider_id": "manual",
+      "data": {
+        "id": "manual-fulfillment"
+      },
+      "price_type": "flat_rate",
+      "amount": 100000
+    },
+    {
+      "name": "PostFake Express",
+      "region_id": "test-region-ng",
+      "provider_id": "manual",
+      "data": {
+        "id": "manual-fulfillment"
+      },
+      "price_type": "flat_rate",
+      "amount": 150000
     },
     {
       "name": "PostFake Express",
@@ -158,19 +165,11 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         },
         {
           "title": "Color",
-          "values": [
-            "Black",
-            "White"
-          ]
+          "values": ["Black", "White"]
         }
       ],
       "variants": [
@@ -379,12 +378,7 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         }
       ],
       "variants": [
@@ -489,12 +483,7 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         }
       ],
       "variants": [
@@ -599,12 +588,7 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         }
       ],
       "variants": [
@@ -712,12 +696,7 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         }
       ],
       "variants": [
@@ -825,12 +804,7 @@
       "options": [
         {
           "title": "Size",
-          "values": [
-            "S",
-            "M",
-            "L",
-            "XL"
-          ]
+          "values": ["S", "M", "L", "XL"]
         }
       ],
       "variants": [
@@ -909,55 +883,6 @@
           "options": [
             {
               "value": "XL"
-            }
-          ],
-          "inventory_quantity": 100,
-          "manage_inventory": true
-        }
-      ]
-    },
-    {
-      "title": "Medusa Coffee Mug",
-      "categories": [
-        {
-          "id": "pcat_merch"
-        },
-        {
-          "id": "pcat_hidden_featured"
-        }
-      ],
-      "subtitle": null,
-      "description": "Every programmer's best friend.",
-      "handle": "coffee-mug",
-      "is_giftcard": false,
-      "weight": 400,
-      "images": [
-        "https://medusa-public-images.s3.eu-west-1.amazonaws.com/coffee-mug.png"
-      ],
-      "options": [
-        {
-          "title": "Size",
-          "values": [
-            "One Size"
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "title": "One Size",
-          "prices": [
-            {
-              "currency_code": "eur",
-              "amount": 1000
-            },
-            {
-              "currency_code": "usd",
-              "amount": 1200
-            }
-          ],
-          "options": [
-            {
-              "value": "One Size"
             }
           ],
           "inventory_quantity": 100,

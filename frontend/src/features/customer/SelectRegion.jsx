@@ -28,13 +28,15 @@ const SelectRegion = ({ isOpen }) => {
 
   return (
     <div className="fixed w-screen h-screen bg-dark bg-opacity-50 flex justify-center items-center z-40">
-      <div className="bg-lightPink p-16 text-dark rounded-lg max-w-[800px] shadow-sm">
-        <h2 className="text-4xl font-medium mb-8">Select your region</h2>
-        <p className="text-xl">
+      <div className="w-full bg-lightPink p-5 text-dark rounded-lg max-w-[800px] shadow-sm lg:p-16">
+        <h2 className="text-2xl font-medium mb-8 lg:text-4xl">
+          Select your region
+        </h2>
+        <p className="text-base lg:text-xl">
           Please specify the region you're shopping from to see prices, products
           and shipping options relevant to you.
         </p>
-        <div className="mt-16 flex gap-8">
+        <div className="mt-8 gap-4 flex lg:mt-16 lg:gap-8">
           {isSuccess &&
             data.map((region, index) => (
               <button

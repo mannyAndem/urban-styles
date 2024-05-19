@@ -9,9 +9,12 @@ import {
   useCreatePaymentSessionsMutation,
 } from "../api/apiSlice";
 import { formatPrice } from "../../utils/formatPrice";
+import { useDispatch } from "react-redux";
+import { clearAddedVariants } from "./cartSlice";
 
 const PaymentForm = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [createPaymentSessions, { isSuccess, isLoading, isError, data: cart }] =
     useCreatePaymentSessionsMutation();
@@ -49,9 +52,9 @@ const PaymentForm = () => {
 
   useEffect(() => {
     if (isPaymentSuccess) {
-      console.log("Paid!!");
-      toast.success("PAID!!!!!");
       completeCart();
+      localStorage.removeItem("cart_id");
+      dispatch(clearAddedVariants());
     }
     if (isPaymentError) {
       toast.error("Could not process payment, please retry.");

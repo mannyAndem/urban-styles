@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import InputGroup from "../../components/InputGroup";
 import ButtonPrimary from "../../components/ButtonPrimary";
 import * as yup from "yup";
@@ -14,6 +14,7 @@ const SignupForm = () => {
     useSignupMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { state } = useLocation();
 
   const initialValues = {
     first_name: "",
@@ -47,7 +48,7 @@ const SignupForm = () => {
       dispatch(setCustomer(data.customer));
       toast.success("Account created successfully");
       setTimeout(() => {
-        navigate("/");
+        navigate(state?.from ?? "/");
       }, 1000);
     }
     if (isError) {
@@ -63,54 +64,82 @@ const SignupForm = () => {
         validationSchema={formSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, handleSubmit, handleChange }) => (
+        {({
+          values,
+          errors,
+          handleSubmit,
+          handleChange,
+          touched,
+          handleBlur,
+          dirty,
+          isValid,
+        }) => (
           <form onSubmit={handleSubmit} className="flex flex-col gap-8">
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-              <InputGroup name="first_name">
+              <InputGroup
+                name="first_name"
+                error={touched.first_name && errors.first_name}
+              >
                 <InputGroup.Label>First Name</InputGroup.Label>
                 <InputGroup.Input
                   placeholder="John"
                   value={values.first_name}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </InputGroup>
-              <InputGroup name="last_name">
+              <InputGroup
+                name="last_name"
+                error={touched.last_name && errors.last_name}
+              >
                 <InputGroup.Label>Last Name</InputGroup.Label>
                 <InputGroup.Input
                   placeholder="Doe"
                   value={values.last_name}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </InputGroup>
             </div>
-            <InputGroup name="email">
+            <InputGroup name="email" error={touched.email && errors.email}>
               <InputGroup.Label>Email</InputGroup.Label>
               <InputGroup.Input
                 placeholder="johndoe@example.com"
                 value={values.email}
                 onChange={handleChange}
+                onBlur={handleBlur}
               />
             </InputGroup>
-            <InputGroup name="password">
+            <InputGroup
+              name="password"
+              error={touched.password && errors.password}
+            >
               <InputGroup.Label>Password</InputGroup.Label>
               <InputGroup.Input
                 placeholder="Enter Password"
                 type="password"
                 value={values.password}
                 onChange={handleChange}
+                onBlur={handleBlur}
               />
             </InputGroup>
-            <InputGroup name="confirm_password">
+            <InputGroup
+              name="confirm_password"
+              error={touched.confirm_password && errors.confirm_password}
+            >
               <InputGroup.Label>Confirm Password</InputGroup.Label>
               <InputGroup.Input
                 placeholder="Confirm Password"
                 value={values.confirm_password}
                 onChange={handleChange}
                 type="password"
+                onBlur={handleBlur}
               />
             </InputGroup>
             <div className="mt-16 flex justify-center">
-              <ButtonPrimary pending={isLoading}>CREATE ACCOUNT</ButtonPrimary>
+              <ButtonPrimary pending={isLoading} disabled={!dirty || !isValid}>
+                CREATE ACCOUNT
+              </ButtonPrimary>
             </div>
           </form>
         )}

@@ -17,7 +17,6 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     updateAddedVariants: (state, action) => {
-      console.log(state.addedVariants);
       state.addedVariants.push(action.payload);
       localStorage.setItem(
         "added_variants",
@@ -34,13 +33,18 @@ export const cartSlice = createSlice({
         JSON.stringify(state.addedVariants)
       );
     },
+    clearAddedVariants: (state) => {
+      state.addedVariants = [];
+      localStorage.removeItem("added_variants");
+    },
   },
 });
 
 export default cartSlice.reducer;
 
 // actions
-export const { updateAddedVariants, deleteVariant } = cartSlice.actions;
+export const { updateAddedVariants, deleteVariant, clearAddedVariants } =
+  cartSlice.actions;
 
 // Selectors
 export const selectCart = (state) => state.cart.data;

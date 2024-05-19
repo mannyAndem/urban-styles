@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import loginImg from "../../assets/images/hero-3.png";
 import logo from "../../assets/brand/logo.png";
 import LoginForm from "../../features/customer/LoginForm";
 
 const Login = () => {
+  const { state } = useLocation();
   return (
     <div className="flex text-dark">
       <div className="w-full hidden lg:block">
@@ -23,7 +24,11 @@ const Login = () => {
         </div>
         <span className="mt-8 text-xl block text-center text-gray">
           New to Urban Styles?{" "}
-          <Link to="/signup" className="text-dark font-medium underline">
+          <Link
+            to="/signup"
+            state={{ ...state }}
+            className="text-dark font-medium underline"
+          >
             Sign up
           </Link>
         </span>
