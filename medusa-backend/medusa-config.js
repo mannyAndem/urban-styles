@@ -45,17 +45,17 @@ const plugins = [
       upload_dir: "uploads",
     },
   },
-  {
-    resolve: "@medusajs/admin",
-    /** @type {import('@medusajs/admin').PluginOptions} */
-    options: {
-      autoRebuild: false,
-      develop: {
-        // open: process.env.OPEN_BROWSER !== "false",
-        open: false,
-      },
-    },
-  },
+  // {
+  //   resolve: "@medusajs/admin",
+  //   /** @type {import('@medusajs/admin').PluginOptions} */
+  //   options: {
+  //     autoRebuild: false,
+  //     develop: {
+  //       // open: process.env.OPEN_BROWSER !== "false",
+  //       open: false,
+  //     },
+  //   },
+  // },
   {
     resolve: `medusa-payment-paystack`,
     /** @type {import("medusa-payment-paystack").PluginOptions} */
