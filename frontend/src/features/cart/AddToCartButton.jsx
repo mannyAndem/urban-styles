@@ -8,18 +8,10 @@ import { useEffect, useMemo } from "react";
 import ButtonSecondary from "../../components/ButtonSecondary";
 import { useAddLineItemMutation } from "../api/apiSlice";
 
-/**
- *
- * Takes a variantId and type prop.
- * The type prop specifies which type of button to be rendered. It accepts on of two values: "icon" | "regular"
- *  The variantId specifies the id of the variant that a line item will ultimately be generated for in the cart
- */
 const AddToCartButton = ({ variantId, type }) => {
-  // const status = useSelector(selectAddProductStatus);
   const addedVariants = useSelector(selectAddedVariants);
   const dispatch = useDispatch();
 
-  // // boolean to hold whether product is already in cart or not
   const isInCart = useMemo(
     () => addedVariants.indexOf(variantId) !== -1,
     [addedVariants]

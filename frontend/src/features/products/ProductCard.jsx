@@ -1,15 +1,13 @@
-import heartIcon from "../../assets/icons/heart-icon.svg";
 import { Link } from "react-router-dom";
 import AddToCartButton from "../cart/AddToCartButton";
 import { formatPrice } from "../../utils/formatPrice";
 import rightArrowImg from "../../assets/icons/arrow-right-white.svg";
+import AddToWishlist from "../wishlist/AddToWishlist";
 
 const ProductCard = ({ product }) => {
   return (
     <div className="w-full relative flex flex-col gap-3 rounded-sm ">
-      <button className="absolute top-8 right-8 p-2 border-2 border-dark rounded-md">
-        <img src={heartIcon} />
-      </button>
+      <AddToWishlist product={product} type="icon" />
       <Link
         to={`/products/${product.handle}`}
         className="w-full rounded-sm overflow-hidden relative group"

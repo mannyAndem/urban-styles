@@ -7,6 +7,7 @@ import AddToCartButton from "../../features/cart/AddToCartButton";
 import Loader from "../../components/Loader";
 import { useGetProductQuery } from "../../features/api/apiSlice";
 import { formatPrice } from "../../utils/formatPrice";
+import AddToWishlist from "../../features/wishlist/AddToWishlist";
 
 const ProductDetails = () => {
   const { handle } = useParams();
@@ -173,9 +174,7 @@ const ProductDetails = () => {
                   )}
                 </div>
                 <div className="flex gap-8 ">
-                  <button className="rounded-md w-full p-4 border-2 border-dark">
-                    ADD TO WISHLIST
-                  </button>
+                  <AddToWishlist product={product} />
                   <AddToCartButton
                     variantId={getCurrentVariant()?.id}
                     type="regular"

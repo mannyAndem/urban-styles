@@ -1,17 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "../../api/axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   meta: null,
 };
-
-// IMPLEMENT FUNCTIONALITY TO SET META TO THIS OBJECT WHEN PRODUCTS IS FETCHED
-
-// state.meta = {
-//   count: action.payload.count,
-//   offset: action.payload.offset,
-//   limit: action.payload.limit,
-// };
 
 export const productsSlice = createSlice({
   name: "products",
